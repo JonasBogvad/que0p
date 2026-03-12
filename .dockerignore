@@ -1,0 +1,8 @@
+node_modules
+dist
+.env
+tokens.json
+queue.json
+Research/
+*.md
+.git

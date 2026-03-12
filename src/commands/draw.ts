@@ -1,0 +1,59 @@
+import { createBotCommand } from '@twurple/easy-bot';
+import * as queue from '../state/queue.js';
+import * as activity from '../state/activity.js';
+import * as readyup from '../state/readyup.js';
+
+export const drawCommand = createBotCommand('draw', async (params, ctx) => {
+  if (!ctx.msg.userInfo.isMod && !ctx.msg.userInfo.isBroadcaster) return;
+
+  // Parse optional N (1–5, default 1)
+  let n = 1;
+  if (params.length > 0 && params[0] !== '') {
+    const parsed = parseInt(params[0], 10);
+    if (isNaN(parsed) || parsed < 1 || parsed > 5) {
+      await ctx.say('Usage: !draw or !draw 1-5');
+      return;
+    }
+    n = parsed;
+  }
+
+  if (readyup.isWaitingForReady()) {
+    await ctx.say(`⚔️ Already waiting for @${readyup.getPendingWinner()} to ready up.`);
+    return;
+  }
+
+  const mode = queue.getMode();
+  if (!mode) {
+    await ctx.say('❌ Queue is not open. Use !open seq or !open ran first.');
+    return;
+  }
+
+  const filterFn = (login: string) => activity.isActive(login);
+  const winners: string[] = [];
+
+  for (let i = 0; i < n; i++) {
+    const winner = mode === 'seq'
+      ? queue.drawSequential(filterFn)
+      : queue.drawRandom(filterFn);
+    if (!winner) break;
+    winners.push(winner);
+  }
+
+  if (winners.length === 0) {
+    await ctx.say('⚔️ No eligible players in the queue. (Must have chatted in the last 10 min)');
+    return;
+  }
+
+  if (winners.length < n) {
+    await ctx.say(
+      `⚔️ Only ${winners.length} eligible player${winners.length === 1 ? '' : 's'} found. Drawing ${winners.length}.`,
+    );
+  }
+
+  readyup.startMultiReadyUp(
+    winners,
+    (login) => { console.log(`[readyup] Slot lost: ${login}`); },
+    (login) => { console.log(`[readyup] Ready: ${login}`); },
+    ctx.say,
+  );
+});
