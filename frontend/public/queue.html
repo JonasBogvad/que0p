@@ -53,6 +53,29 @@
       .readyup-user { font-size: 1rem; font-weight: 700; }
       .readyup-pending { font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem; }
 
+      /* Lobby */
+      .lobby-box { border: 1px solid var(--border); overflow: hidden; margin-bottom: 1.5rem; }
+      .lobby-header {
+        padding: 0.6rem 1.25rem;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.65rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        display: flex;
+        justify-content: space-between;
+      }
+      .lobby-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.6rem 1.25rem;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.875rem;
+      }
+      .lobby-item:last-child { border-bottom: none; }
+      .lobby-dot { color: var(--green); font-size: 0.6rem; }
+
       /* Queue list */
       .queue-list { border: 1px solid var(--border); overflow: hidden; }
       .queue-item {
@@ -153,6 +176,7 @@
               <div class="readyup-user" id="readyup-user"></div>
               <div class="readyup-pending" id="readyup-pending"></div>
             </div>
+            <div id="lobby-container"></div>
             <div id="queue-container"><div class="empty-state">loading...</div></div>
           </div>
           <div>
@@ -253,7 +277,7 @@
             // Log last readyup event if it changed
             const evt = data.readyup.lastEvent;
             if (evt?.login && evt.login !== prevLastEventLogin) {
-              if (evt.type === 'ready') addLog('ready', `${evt.login} is ready ⚡`);
+              if (evt.type === 'ready') addLog('ready', `${evt.login} is ready ⚡ — joined lobby`);
               else if (evt.type === 'lost') addLog('lost', `${evt.login} — slot lost ⏰`);
               else if (evt.type === 'skip') addLog('close', `${evt.login} skipped 💨`);
               prevLastEventLogin = evt.login;
@@ -273,6 +297,25 @@
             } else {
               if (prevReadyupUser !== null) { stopCountdown(); prevReadyupUser = null; }
               banner.className = 'readyup-banner';
+            }
+
+            // Lobby
+            const lobbyContainer = document.getElementById('lobby-container');
+            if (data.lobby && data.lobby.length > 0) {
+              lobbyContainer.innerHTML = `<div class="lobby-box">
+                <div class="lobby-header">
+                  <span>// lobby</span>
+                  <span>${data.lobby.length} confirmed</span>
+                </div>
+                ${data.lobby.map(name =>
+                  `<div class="lobby-item">
+                    <span class="lobby-dot">●</span>
+                    <span>${escHtml(name)}</span>
+                  </div>`
+                ).join('')}
+              </div>`;
+            } else {
+              lobbyContainer.innerHTML = '';
             }
 
             // Queue list

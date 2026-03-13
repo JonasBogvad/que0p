@@ -9,6 +9,11 @@ export interface ChannelState {
   activity: ActivityState;
   readyup: ReadyupState;
   cooldown: CooldownState;
+  lobby: {
+    list: () => string[];
+    add: (login: string) => void;
+    clear: () => void;
+  };
 }
 
 const _channels = new Map<string, ChannelState>();
@@ -16,11 +21,17 @@ const _channels = new Map<string, ChannelState>();
 export function getChannelState(channel: string): ChannelState {
   let state = _channels.get(channel);
   if (!state) {
+    let _lobby: string[] = [];
     state = {
       queue: createQueueState(queueFile(channel)),
       activity: createActivityState(),
       readyup: createReadyupState(),
       cooldown: createCooldownState(),
+      lobby: {
+        list: () => [..._lobby],
+        add: (login: string) => { if (!_lobby.includes(login)) _lobby.push(login); },
+        clear: () => { _lobby = []; },
+      },
     };
     _channels.set(channel, state);
   }

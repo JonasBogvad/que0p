@@ -52,12 +52,13 @@ export function startWebServer(): void {
       res.status(404).json({ error: 'Channel not found' });
       return;
     }
-    const { queue, readyup } = getChannelState(channel);
+    const { queue, readyup, lobby } = getChannelState(channel);
     res.json({
       open: queue.isQueueOpen(),
       mode: queue.getMode(),
       players: queue.list(),
       size: queue.size(),
+      lobby: lobby.list(),
       readyup: {
         waiting: readyup.isWaitingForReady(),
         current: readyup.getPendingWinner(),
