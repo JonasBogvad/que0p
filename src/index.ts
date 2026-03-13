@@ -82,9 +82,8 @@ async function main() {
   });
 
   // Patch bot.say to send via Helix API (gets the bot badge) with a rate limiter.
-  // Original IRC say is passed as fallback in case Helix fails (e.g. stale token).
-  const originalSay = bot.say.bind(bot);
-  const helixSay = createHelixSay((ch, text) => originalSay(ch, text));
+  // authProvider.getAccessTokenForUser() always returns a valid/refreshed token.
+  const helixSay = createHelixSay(authProvider);
   (bot as unknown as { say: typeof bot.say }).say = createRateLimitedSay(
     (channel: string, text: string) => helixSay(channel, text),
   ) as typeof bot.say;

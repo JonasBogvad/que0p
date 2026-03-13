@@ -3,13 +3,8 @@ import { readFile, writeFile } from 'fs/promises';
 import { config } from './config.js';
 import { TOKENS_PATH } from './paths.js';
 
-// Latest access token and resolved bot user ID
-let _accessToken: string | null = null;
+// Resolved bot user ID (set after token validation on startup)
 let _botUserId: string | null = null;
-
-export function getAccessToken(): string | null {
-  return _accessToken;
-}
 
 export function getBotUserId(): string | null {
   return _botUserId;
@@ -66,31 +61,24 @@ export async function createAuthProvider(): Promise<RefreshingAuthProvider> {
   });
 
   authProvider.onRefresh(async (_userId, newTokenData) => {
-    _accessToken = newTokenData.accessToken;
     await writeFile(TOKENS_PATH, JSON.stringify(newTokenData, null, 2), 'utf-8');
-    const data = await validateToken(_accessToken);
-    if (data) {
-      _botUserId = data.user_id;
-      console.log(`[auth] Token refreshed — bot user: ${data.login} (${data.user_id})`);
-    }
+    console.log('[auth] Token refreshed and persisted');
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tokenData = await loadTokenData() as any;
-  _accessToken = tokenData.accessToken as string;
+  const storedAccessToken = tokenData.accessToken as string;
 
   // Validate the stored token — if expired, refresh it before proceeding
-  let userData = await validateToken(_accessToken);
+  let userData = await validateToken(storedAccessToken);
   if (!userData) {
     console.log('[auth] Access token expired, refreshing...');
     const refreshed = await refreshAccessToken(tokenData.refreshToken as string);
-    _accessToken = refreshed.access_token;
-    // Update stored token data with fresh access token
-    tokenData.accessToken = _accessToken;
+    tokenData.accessToken = refreshed.access_token;
     tokenData.refreshToken = refreshed.refresh_token;
     tokenData.obtainmentTimestamp = Date.now();
     await writeFile(TOKENS_PATH, JSON.stringify(tokenData, null, 2), 'utf-8');
-    userData = await validateToken(_accessToken);
+    userData = await validateToken(tokenData.accessToken as string);
     if (!userData) throw new Error('Token refresh succeeded but validation still failed.');
   }
 

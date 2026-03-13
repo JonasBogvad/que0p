@@ -1,4 +1,5 @@
-import { getAccessToken, getBotUserId } from '../auth.js';
+import type { RefreshingAuthProvider } from '@twurple/auth';
+import { getBotUserId } from '../auth.js';
 import { config } from '../config.js';
 
 // Cache channel login → numeric broadcaster ID (never changes)
@@ -30,23 +31,26 @@ async function getBroadcasterId(channel: string, accessToken: string): Promise<s
 }
 
 export function createHelixSay(
-  fallback: (channel: string, message: string) => Promise<void>,
+  authProvider: RefreshingAuthProvider,
 ): (channel: string, message: string) => Promise<void> {
   return async function helixSay(channel: string, message: string): Promise<void> {
     try {
-      const accessToken = getAccessToken();
-      if (!accessToken) {
-        console.error('[helix] No access token — falling back to IRC');
-        await fallback(channel, message);
+      const botUserId = getBotUserId();
+      if (!botUserId) {
+        console.error('[helix] Bot user ID not resolved yet');
         return;
       }
 
-      const broadcasterId = await getBroadcasterId(channel, accessToken);
-      if (!broadcasterId) {
-        console.error(`[helix] No broadcaster ID for ${channel} — falling back to IRC`);
-        await fallback(channel, message);
+      // Always get a fresh token — authProvider refreshes automatically if expired
+      const tokenData = await authProvider.getAccessTokenForUser(botUserId);
+      if (!tokenData) {
+        console.error('[helix] No access token from authProvider');
         return;
       }
+      const accessToken = tokenData.accessToken;
+
+      const broadcasterId = await getBroadcasterId(channel, accessToken);
+      if (!broadcasterId) return;
 
       const res = await fetch('https://api.twitch.tv/helix/chat/messages', {
         method: 'POST',
@@ -57,19 +61,17 @@ export function createHelixSay(
         },
         body: JSON.stringify({
           broadcaster_id: broadcasterId,
-          sender_id: getBotUserId(),
+          sender_id: botUserId,
           message,
         }),
       });
 
       if (!res.ok) {
         const body = await res.text();
-        console.error(`[helix] Failed to send message to #${channel}: ${res.status} ${body} — falling back to IRC`);
-        await fallback(channel, message);
+        console.error(`[helix] Failed to send message to #${channel}: ${res.status} ${body}`);
       }
     } catch (err) {
       console.error(`[helix] Unexpected error sending to #${channel}:`, err);
-      await fallback(channel, message);
     }
   };
 }
