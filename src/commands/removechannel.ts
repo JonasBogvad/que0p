@@ -5,7 +5,7 @@ import { leaveChannel } from '../botActions.js';
 
 export const removeChannelCommand = createBotCommand('removechannel', async (_params, ctx) => {
   // Cannot remove the owner's channel
-  if (ctx.broadcasterName === config.channel) return;
+  if (ctx.broadcasterName === config.channel.toLowerCase()) return;
   if (!ctx.msg.userInfo.isMod && !ctx.msg.userInfo.isBroadcaster) return;
 
   const ch = ctx.broadcasterName;
