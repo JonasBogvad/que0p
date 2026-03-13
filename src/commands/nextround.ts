@@ -7,7 +7,7 @@ export const nextroundCommand = createBotCommand('nextround', async (_params, ct
 
   const players = lobby.list();
   if (players.length === 0) {
-    await ctx.say('🏁 No one in the lobby.');
+    await ctx.say('> lobby is empty');
     return;
   }
 
@@ -16,5 +16,5 @@ export const nextroundCommand = createBotCommand('nextround', async (_params, ct
   lobby.clear();
 
   console.log(`[cmd] ${ctx.userName} nextround in #${ctx.broadcasterName} — requeued: ${players.join(', ')}`);
-  await ctx.say(`🔁 Round over! ${players.join(', ')} moved back to the queue.`);
+  await ctx.say(`> round over — ${players.join(', ')} requeued`);
 });

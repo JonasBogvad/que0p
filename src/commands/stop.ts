@@ -8,5 +8,5 @@ export const stopCommand = createBotCommand('stop', async (_params, ctx) => {
   queue.stopAnnounce();
   queue.close();
   console.log(`[cmd] ${ctx.userName} closed queue in #${ctx.broadcasterName}`);
-  await ctx.say('🚫 Queue closed. GGs!');
+  await ctx.say('> queue closed');
 });

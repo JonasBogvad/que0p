@@ -7,13 +7,13 @@ export const joinCommand = createBotCommand('join', async (_params, ctx) => {
   const { queue, cooldown } = getChannelState(ctx.broadcasterName);
   if (!cooldown.checkCooldown(ctx.userName, 'join', COOLDOWN_MS)) return;
   if (!queue.isQueueOpen()) {
-    await ctx.say(`❌ @${ctx.userName} queue is closed — no lobby right now!`);
+    await ctx.say(`> @${ctx.userName} queue is closed`);
     return;
   }
   const position = queue.join(ctx.userName);
   if (position === null) {
-    await ctx.say(`❌ @${ctx.userName} you're already in the queue, chill!`);
+    await ctx.say(`> @${ctx.userName} already in queue`);
   } else {
-    await ctx.say(`☠️ @${ctx.userName} locked and loaded! You're #${position} of ${queue.size()} in the queue.`);
+    await ctx.say(`> @${ctx.userName} joined [#${position} of ${queue.size()}]`);
   }
 });

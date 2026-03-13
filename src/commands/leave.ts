@@ -8,8 +8,8 @@ export const leaveCommand = createBotCommand('leave', async (_params, ctx) => {
   if (!cooldown.checkCooldown(ctx.userName, 'leave', COOLDOWN_MS)) return;
   const removed = queue.leave(ctx.userName);
   if (removed) {
-    await ctx.say(`💨 @${ctx.userName} bailed out of the queue. See you next round!`);
+    await ctx.say(`> @${ctx.userName} left the queue`);
   } else {
-    await ctx.say(`❌ @${ctx.userName} you're not even in the queue!`);
+    await ctx.say(`> @${ctx.userName} not in queue`);
   }
 });

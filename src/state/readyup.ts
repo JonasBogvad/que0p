@@ -36,13 +36,13 @@ export function createReadyupState(): ReadyupState {
     }
     const winner = _pendingList.shift()!;
     _currentWinner = winner;
-    void _say(`💣 @${winner} — you've been picked! Type !ready within 30s or !skip to pass.`);
+    void _say(`> @${winner} — type !ready within 30s or !skip to pass`);
     _readyTimer = setTimeout(() => {
       _readyTimer = null;
       const timedOut = _currentWinner;
       if (timedOut === null || _say === null) return;
       _currentWinner = null;
-      void _say(`⏰ @${timedOut} took too long. Slot lost!`);
+      void _say(`> @${timedOut} — slot lost [30s]`);
       _lastEvent = { type: 'lost', login: timedOut };
       if (_onSlotLost) _onSlotLost(timedOut);
       processNext();
@@ -66,7 +66,7 @@ export function createReadyupState(): ReadyupState {
       if (_readyTimer !== null) { clearTimeout(_readyTimer); _readyTimer = null; }
       const winner = _currentWinner;
       _currentWinner = null;
-      void say(`⚡ @${winner} is ready! GL HF — frag out!`);
+      void say(`> @${winner} ready — slot confirmed`);
       _lastEvent = { type: 'ready', login: winner };
       if (_onReady) _onReady(winner);
       processNext();
@@ -78,7 +78,7 @@ export function createReadyupState(): ReadyupState {
       if (_readyTimer !== null) { clearTimeout(_readyTimer); _readyTimer = null; }
       const skipped = _currentWinner;
       _currentWinner = null;
-      void say(`💨 @${skipped} passed. Moving on...`);
+      void say(`> @${skipped} skipped — requeued`);
       _lastEvent = { type: 'skip', login: skipped };
       if (_onSlotLost) _onSlotLost(skipped);
       processNext();

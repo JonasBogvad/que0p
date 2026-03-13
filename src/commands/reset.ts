@@ -10,5 +10,5 @@ export const resetCommand = createBotCommand('reset', async (_params, ctx) => {
   queue.clear();
   lobby.clear();
   console.log(`[cmd] ${ctx.userName} reset queue in #${ctx.broadcasterName}`);
-  await ctx.say('🔄 Queue wiped. Starting fresh!');
+  await ctx.say('> queue wiped');
 });
