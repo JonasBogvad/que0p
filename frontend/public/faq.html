@@ -103,19 +103,19 @@
             <span class="faq-chevron">▶</span>
           </button>
           <div class="faq-a">
-            <p><code>!open seq</code> or <code>!open ran</code> → viewers type <code>!join</code> → mod types <code>!draw</code> → drawn players type <code>!ready</code> within 30s → confirmed players appear in the lobby.</p>
-            <p>Repeat <code>!draw</code> to fill more slots. Use <code>!stop</code> when done taking new players, or <code>!reset</code> to wipe everything and start fresh.</p>
+            <p><code>!qopen seq</code> or <code>!qopen ran</code> → viewers type <code>!qjoin</code> → mod types <code>!qdraw</code> → drawn players type <code>!qready</code> within 30s → confirmed players appear in the lobby.</p>
+            <p>Repeat <code>!qdraw</code> to fill more slots. Use <code>!qstop</code> when done taking new players, or <code>!qreset</code> to wipe everything and start fresh.</p>
           </div>
         </div>
 
         <div class="faq-item">
           <button class="faq-q" aria-expanded="false">
-            <span><span class="faq-q-prefix">Q.</span> What's the difference between <code>!stop</code> and <code>!reset</code>?</span>
+            <span><span class="faq-q-prefix">Q.</span> What's the difference between <code>!qstop</code> and <code>!qreset</code>?</span>
             <span class="faq-chevron">▶</span>
           </button>
           <div class="faq-a">
-            <p><code>!stop</code> closes the queue so no new players can join — but everyone already in the queue stays. The lobby stays intact too. You can reopen with <code>!open</code> and continue drawing.</p>
-            <p><code>!reset</code> wipes everything: queue, lobby, and draw state. Everyone has to <code>!join</code> again from scratch.</p>
+            <p><code>!qstop</code> closes the queue so no new players can join — but everyone already in the queue stays. The lobby stays intact too. You can reopen with <code>!qopen</code> and continue drawing.</p>
+            <p><code>!qreset</code> wipes everything: queue, lobby, and draw state. Everyone has to <code>!qjoin</code> again from scratch.</p>
           </div>
         </div>
 
@@ -125,8 +125,8 @@
             <span class="faq-chevron">▶</span>
           </button>
           <div class="faq-a">
-            <p><code>!open seq</code> — sequential. Players are drawn in the order they joined. First in, first out.</p>
-            <p><code>!open ran</code> — random. Players are drawn randomly from the queue regardless of join order.</p>
+            <p><code>!qopen seq</code> — sequential. Players are drawn in the order they joined. First in, first out.</p>
+            <p><code>!qopen ran</code> — random. Players are drawn randomly from the queue regardless of join order.</p>
           </div>
         </div>
 
@@ -136,7 +136,7 @@
             <span class="faq-chevron">▶</span>
           </button>
           <div class="faq-a">
-            <p>Yes — <code>!draw 3</code> draws up to 3 players. They are prompted one at a time: each has 30 seconds to <code>!ready</code> before the next is called. You can draw up to 5 at once.</p>
+            <p>Yes — <code>!qdraw 3</code> draws up to 3 players. They are prompted one at a time: each has 30 seconds to <code>!qready</code> before the next is called. You can draw up to 5 at once.</p>
           </div>
         </div>
 
@@ -151,18 +151,18 @@
             <span class="faq-chevron">▶</span>
           </button>
           <div class="faq-a">
-            <p>They have 30 seconds to type <code>!ready</code>. If the timer runs out, their slot is lost and the next player in the drawn batch is prompted.</p>
-            <p>They are automatically put back at the end of the queue — no need to <code>!join</code> again.</p>
+            <p>They have 30 seconds to type <code>!qready</code>. If the timer runs out, their slot is lost and the next player in the drawn batch is prompted.</p>
+            <p>They are automatically put back at the end of the queue — no need to <code>!qjoin</code> again.</p>
           </div>
         </div>
 
         <div class="faq-item">
           <button class="faq-q" aria-expanded="false">
-            <span><span class="faq-q-prefix">Q.</span> If I <code>!skip</code>, am I removed from the queue?</span>
+            <span><span class="faq-q-prefix">Q.</span> If I <code>!qskip</code>, am I removed from the queue?</span>
             <span class="faq-chevron">▶</span>
           </button>
           <div class="faq-a">
-            <p><code>!skip</code> passes your slot and puts you back at the end of the queue automatically. You can be drawn again in a future <code>!draw</code>.</p>
+            <p><code>!qskip</code> passes your slot and puts you back at the end of the queue automatically. You can be drawn again in a future <code>!qdraw</code>.</p>
             <p>Mods can also skip on a player's behalf.</p>
           </div>
         </div>
@@ -173,8 +173,8 @@
             <span class="faq-chevron">▶</span>
           </button>
           <div class="faq-a">
-            <p>The lobby shows players who have confirmed their slot with <code>!ready</code>. It persists across multiple <code>!draw</code> rounds so you always know who is already in.</p>
-            <p>The lobby clears on <code>!nextround</code> (players moved back to queue) or <code>!reset</code> (everything wiped).</p>
+            <p>The lobby shows players who have confirmed their slot with <code>!qready</code>. It persists across multiple <code>!qdraw</code> rounds so you always know who is already in.</p>
+            <p>The lobby clears on <code>!qnext</code> (players moved back to queue) or <code>!qreset</code> (everything wiped).</p>
           </div>
         </div>
 
@@ -184,8 +184,8 @@
             <span class="faq-chevron">▶</span>
           </button>
           <div class="faq-a">
-            <p><code>!nextround</code> — moves everyone in the lobby back to the end of the queue and clears the lobby. Players who were waiting in queue the whole time stay at the front. Fair for everyone.</p>
-            <p>Use <code>!reset</code> instead if you want a completely fresh start with no one in queue.</p>
+            <p><code>!qnext</code> — moves everyone in the lobby back to the end of the queue and clears the lobby. Players who were waiting in queue the whole time stay at the front. Fair for everyone.</p>
+            <p>Use <code>!qreset</code> instead if you want a completely fresh start with no one in queue.</p>
           </div>
         </div>
 

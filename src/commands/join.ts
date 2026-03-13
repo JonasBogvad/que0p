@@ -3,9 +3,13 @@ import { getChannelState } from '../state/perChannel.js';
 
 const COOLDOWN_MS = 3000;
 
-export const joinCommand = createBotCommand('join', async (_params, ctx) => {
-  const { queue, cooldown } = getChannelState(ctx.broadcasterName);
-  if (!cooldown.checkCooldown(ctx.userName, 'join', COOLDOWN_MS)) return;
+export const joinCommand = createBotCommand('qjoin', async (_params, ctx) => {
+  const { queue, cooldown, banlist } = getChannelState(ctx.broadcasterName);
+  if (!cooldown.checkCooldown(ctx.userName, 'qjoin', COOLDOWN_MS)) return;
+  if (banlist.isBanned(ctx.userName)) {
+    await ctx.say(`> @${ctx.userName} you are banned from this queue`);
+    return;
+  }
   if (!queue.isQueueOpen()) {
     await ctx.say(`> @${ctx.userName} queue is closed`);
     return;

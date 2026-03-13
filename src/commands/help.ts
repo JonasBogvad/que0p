@@ -3,10 +3,10 @@ import { getChannelState } from '../state/perChannel.js';
 
 const COOLDOWN_MS = 30_000;
 
-export const helpCommand = createBotCommand('help', async (_params, ctx) => {
+export const helpCommand = createBotCommand('qhelp', async (_params, ctx) => {
   const { cooldown } = getChannelState(ctx.broadcasterName);
-  if (!cooldown.checkCooldown(ctx.userName, 'help', COOLDOWN_MS)) return;
+  if (!cooldown.checkCooldown(ctx.userName, 'qhelp', COOLDOWN_MS)) return;
   await ctx.say(
-    '> cmds: !join !leave !pos !ready !skip | mods: !open seq/ran !stop !draw !queue !remove !nextround !reset | que0p.stream',
+    '> cmds: !qjoin !qleave !qpos !qready !qskip | mods: !qopen seq/ran !qstop !qdraw !qlist !qremove !qnext !qreset !qban !qunban | que0p.stream',
   );
 });

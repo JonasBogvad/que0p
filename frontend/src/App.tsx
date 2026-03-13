@@ -127,23 +127,26 @@ const features = [
 ];
 
 const viewerCommands = [
-  { cmd: '!join', desc: 'Enter the queue' },
-  { cmd: '!leave', desc: 'Leave the queue' },
-  { cmd: '!pos', desc: 'Check your position' },
-  { cmd: '!ready', desc: 'Accept when drawn' },
-  { cmd: '!skip', desc: 'Pass your slot' },
-  { cmd: '!help', desc: 'Show all commands' },
+  { cmd: '!qjoin', desc: 'Enter the queue' },
+  { cmd: '!qleave', desc: 'Leave the queue' },
+  { cmd: '!qpos', desc: 'Check your position' },
+  { cmd: '!qready', desc: 'Accept when drawn' },
+  { cmd: '!qskip', desc: 'Pass your slot' },
+  { cmd: '!qhelp', desc: 'Show all commands' },
 ];
 
 const modCommands = [
-  { cmd: '!open seq', desc: 'Open queue (sequential)' },
-  { cmd: '!open ran', desc: 'Open queue (random)' },
-  { cmd: '!stop', desc: 'Close the queue' },
-  { cmd: '!draw [1-5]', desc: 'Draw players' },
-  { cmd: '!queue', desc: 'View the queue' },
-  { cmd: '!remove <user>', desc: 'Remove a player from the queue' },
-  { cmd: '!nextround', desc: 'Move lobby back to queue, clear lobby' },
-  { cmd: '!reset', desc: 'Wipe queue + lobby, start fresh' },
+  { cmd: '!qopen seq', desc: 'Open queue (sequential)' },
+  { cmd: '!qopen ran', desc: 'Open queue (random)' },
+  { cmd: '!qstop', desc: 'Close the queue' },
+  { cmd: '!qdraw [1-5]', desc: 'Draw players' },
+  { cmd: '!qlist', desc: 'View the queue' },
+  { cmd: '!qremove <user>', desc: 'Remove a player from the queue' },
+  { cmd: '!qban <user>', desc: 'Ban a player from joining' },
+  { cmd: '!qunban <user>', desc: 'Unban a player' },
+  { cmd: '!qbanlist', desc: 'View banned players' },
+  { cmd: '!qnext', desc: 'Move lobby back to queue, clear lobby' },
+  { cmd: '!qreset', desc: 'Wipe queue + lobby, start fresh' },
   { cmd: '!removechannel', desc: 'Remove bot from your channel' },
 ];
 

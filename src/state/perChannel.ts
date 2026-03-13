@@ -14,6 +14,12 @@ export interface ChannelState {
     add: (login: string) => void;
     clear: () => void;
   };
+  banlist: {
+    ban: (login: string) => void;
+    unban: (login: string) => void;
+    isBanned: (login: string) => boolean;
+    list: () => string[];
+  };
 }
 
 const _channels = new Map<string, ChannelState>();
@@ -22,6 +28,7 @@ export function getChannelState(channel: string): ChannelState {
   let state = _channels.get(channel);
   if (!state) {
     let _lobby: string[] = [];
+    const _banned = new Set<string>();
     state = {
       queue: createQueueState(queueFile(channel)),
       activity: createActivityState(),
@@ -31,6 +38,12 @@ export function getChannelState(channel: string): ChannelState {
         list: () => [..._lobby],
         add: (login: string) => { if (!_lobby.includes(login)) _lobby.push(login); },
         clear: () => { _lobby = []; },
+      },
+      banlist: {
+        ban: (login: string) => _banned.add(login),
+        unban: (login: string) => _banned.delete(login),
+        isBanned: (login: string) => _banned.has(login),
+        list: () => [..._banned],
       },
     };
     _channels.set(channel, state);

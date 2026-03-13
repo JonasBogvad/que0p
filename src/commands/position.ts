@@ -3,9 +3,9 @@ import { getChannelState } from '../state/perChannel.js';
 
 const COOLDOWN_MS = 3000;
 
-export const positionCommand = createBotCommand('pos', async (_params, ctx) => {
+export const positionCommand = createBotCommand('qpos', async (_params, ctx) => {
   const { queue, cooldown } = getChannelState(ctx.broadcasterName);
-  if (!cooldown.checkCooldown(ctx.userName, 'pos', COOLDOWN_MS)) return;
+  if (!cooldown.checkCooldown(ctx.userName, 'qpos', COOLDOWN_MS)) return;
   const list = queue.list();
   const idx = list.indexOf(ctx.userName);
   if (idx === -1) {

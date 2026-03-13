@@ -1,7 +1,7 @@
 import { createBotCommand } from '@twurple/easy-bot';
 import { getChannelState } from '../state/perChannel.js';
 
-export const nextroundCommand = createBotCommand('nextround', async (_params, ctx) => {
+export const nextroundCommand = createBotCommand('qnext', async (_params, ctx) => {
   if (!ctx.msg.userInfo.isMod && !ctx.msg.userInfo.isBroadcaster) return;
   const { queue, readyup, lobby } = getChannelState(ctx.broadcasterName);
 

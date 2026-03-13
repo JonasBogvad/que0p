@@ -1,7 +1,7 @@
 import { createBotCommand } from '@twurple/easy-bot';
 import { getChannelState } from '../state/perChannel.js';
 
-export const skipCommand = createBotCommand('skip', async (_params, ctx) => {
+export const skipCommand = createBotCommand('qskip', async (_params, ctx) => {
   const { readyup } = getChannelState(ctx.broadcasterName);
   if (!readyup.isWaitingForReady()) return;
 

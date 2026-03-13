@@ -1,14 +1,14 @@
 import { createBotCommand } from '@twurple/easy-bot';
 import { getChannelState } from '../state/perChannel.js';
 
-export const drawCommand = createBotCommand('draw', async (params, ctx) => {
+export const drawCommand = createBotCommand('qdraw', async (params, ctx) => {
   if (!ctx.msg.userInfo.isMod && !ctx.msg.userInfo.isBroadcaster) return;
 
   let n = 1;
   if (params.length > 0 && params[0] !== '') {
     const parsed = parseInt(params[0], 10);
     if (isNaN(parsed) || parsed < 1 || parsed > 5) {
-      await ctx.say('Usage: !draw or !draw 1-5');
+      await ctx.say('> usage: !qdraw or !qdraw 1-5');
       return;
     }
     n = parsed;

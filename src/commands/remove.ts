@@ -1,12 +1,12 @@
 import { createBotCommand } from '@twurple/easy-bot';
 import { getChannelState } from '../state/perChannel.js';
 
-export const removeCommand = createBotCommand('remove', async (params, ctx) => {
+export const removeCommand = createBotCommand('qremove', async (params, ctx) => {
   if (!ctx.msg.userInfo.isMod && !ctx.msg.userInfo.isBroadcaster) return;
 
   const target = params[0]?.toLowerCase().replace(/^@/, '');
   if (!target) {
-    await ctx.say('> usage: !remove <user>');
+    await ctx.say('> usage: !qremove <user>');
     return;
   }
 

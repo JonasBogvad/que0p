@@ -20,6 +20,7 @@ import { skipCommand } from './commands/skip.js';
 import { resetCommand } from './commands/reset.js';
 import { nextroundCommand } from './commands/nextround.js';
 import { removeCommand } from './commands/remove.js';
+import { banCommand, unbanCommand, banlistCommand } from './commands/ban.js';
 import { helpCommand } from './commands/help.js';
 import { allowChannelCommand } from './commands/allowchannel.js';
 import { approvedListCommand } from './commands/approvedlist.js';
@@ -68,6 +69,9 @@ async function main() {
       resetCommand,
       nextroundCommand,
       removeCommand,
+      banCommand,
+      unbanCommand,
+      banlistCommand,
       helpCommand,
       allowChannelCommand,
       approvedListCommand,

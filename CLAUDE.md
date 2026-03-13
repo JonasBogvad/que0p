@@ -87,20 +87,21 @@ src/
     cooldown.ts         — per-user per-command cooldown tracker
 
   commands/
-    join.ts             — !join
-    leave.ts            — !leave
-    position.ts         — !pos
-    open.ts             — !open seq/ran
-    stop.ts             — !stop
-    draw.ts             — !draw [1-5]
-    ready.ts            — !ready
-    skip.ts             — !skip
-    reset.ts            — !reset
-    nextround.ts        — !nextround
-    queue.ts            — !queue
-    help.ts             — !help
+    join.ts             — !qjoin
+    leave.ts            — !qleave
+    position.ts         — !qpos
+    open.ts             — !qopen seq/ran
+    stop.ts             — !qstop
+    draw.ts             — !qdraw [1-5]
+    ready.ts            — !qready
+    skip.ts             — !qskip
+    reset.ts            — !qreset
+    nextround.ts        — !qnext
+    queue.ts            — !qlist
+    remove.ts           — !qremove <user> (mod+)
+    ban.ts              — !qban <user>, !qunban <user>, !qbanlist (mod+)
+    help.ts             — !qhelp
     allowchannel.ts     — !allowchannel (owner channel only)
-    remove.ts           — !remove <user> (mod+, removes player from queue)
     removechannel.ts    — !removechannel (any channel, mod+)
     approvedlist.ts     — !approvedlist (owner channel only)
 
@@ -171,16 +172,16 @@ Every active channel has isolated state created by `getChannelState(channel)`:
 
 ## Queue flow
 
-1. `!open seq` or `!open ran` — opens queue, starts 60s announce loop
-2. Viewers type `!join` — added to queue
-3. `!draw [n]` — draws up to 5 players (filtered by activity); removed from queue immediately
-4. Each drawn player gets 30s to type `!ready` or `!skip`
-   - `!ready` → added to lobby, removed from draw batch
-   - `!skip` → requeued at end, removed from draw batch
+1. `!qopen seq` or `!qopen ran` — opens queue, starts 60s announce loop
+2. Viewers type `!qjoin` — added to queue (blocked if banned)
+3. `!qdraw [n]` — draws up to 5 players (filtered by activity); removed from queue immediately
+4. Each drawn player gets 30s to type `!qready` or `!qskip`
+   - `!qready` → added to lobby, removed from draw batch
+   - `!qskip` → requeued at end, removed from draw batch
    - timeout → requeued at end, slot lost
-5. `!stop` — closes queue; players and lobby stay intact
-6. `!nextround` — clears lobby, requeues lobby players at end of queue
-7. `!reset` — wipes queue, lobby, and draw state entirely
+5. `!qstop` — closes queue; players and lobby stay intact
+6. `!qnext` — clears lobby, requeues lobby players at end of queue
+7. `!qreset` — wipes queue, lobby, and draw state entirely
 
 ---
 
@@ -197,8 +198,8 @@ Examples:
 ```
 > @swisz joined [#1 of 5]
 > @swisz #3 of 12
->_ queue open [sequential] — type !join to enter
->_ @swisz — type !ready within 30s or !skip to pass
+>_ queue open [sequential] — type !qjoin to enter
+>_ @swisz — type !qready within 30s or !qskip to pass
 > @swisz ready — slot confirmed
 > @swisz — slot lost [30s]
 > queue wiped
@@ -337,7 +338,7 @@ Old domain `twitch-que.fly.dev` 301-redirects to `que0p.stream` via middleware i
 
 ## Adding a new command
 
-1. Create `src/commands/yourcommand.ts` — export `yourCommand = createBotCommand('name', handler)`
+1. Create `src/commands/yourcommand.ts` — export `yourCommand = createBotCommand('qname', handler)` (all commands use `q` prefix)
 2. Import and register in `src/index.ts` commands array
 3. Add to `!help` message in `src/commands/help.ts`
 4. Add to mod or viewer commands table in `frontend/src/App.tsx`

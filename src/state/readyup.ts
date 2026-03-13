@@ -36,7 +36,7 @@ export function createReadyupState(): ReadyupState {
     }
     const winner = _pendingList.shift()!;
     _currentWinner = winner;
-    void _say(`>_ @${winner} — type !ready within 30s or !skip to pass`);
+    void _say(`>_ @${winner} — type !qready within 30s or !qskip to pass`);
     _readyTimer = setTimeout(() => {
       _readyTimer = null;
       const timedOut = _currentWinner;
