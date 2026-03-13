@@ -7,6 +7,6 @@ export const helpCommand = createBotCommand('help', async (_params, ctx) => {
   const { cooldown } = getChannelState(ctx.broadcasterName);
   if (!cooldown.checkCooldown(ctx.userName, 'help', COOLDOWN_MS)) return;
   await ctx.say(
-    '🎮 Commands: !join, !leave, !pos, !ready, !skip | Mods: !open seq/ran, !stop, !draw, !queue, !nextround, !reset | https://twitch-que.fly.dev',
+    '🎮 Commands: !join, !leave, !pos, !ready, !skip | Mods: !open seq/ran, !stop, !draw, !queue, !nextround, !reset | https://que0p.stream',
   );
 });
