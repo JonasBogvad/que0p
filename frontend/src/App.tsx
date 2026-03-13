@@ -177,8 +177,8 @@ export default function App() {
             <span className="text-muted-foreground">~/</span>que0p
           </span>
           <div className="flex items-center gap-4">
-            <a href="/channels.html" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">channels</a>
-            <a href="/faq.html" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">faq</a>
+            <a href="/channels.html" className="text-sm text-muted-foreground hover:text-foreground transition-colors">channels</a>
+            <a href="/faq.html" className="text-sm text-muted-foreground hover:text-foreground transition-colors">faq</a>
             <a href="/add-channel">
               <Button size="sm">add-channel</Button>
             </a>
