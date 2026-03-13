@@ -106,11 +106,11 @@ const modCommands = [
   { cmd: '!queue', desc: 'View the queue' },
   { cmd: '!nextround', desc: 'Move lobby back to queue, clear lobby' },
   { cmd: '!reset', desc: 'Wipe queue + lobby, start fresh' },
+  { cmd: '!removechannel', desc: 'Remove bot from your channel' },
 ];
 
 const adminCommands = [
   { cmd: '!allowchannel <user>', desc: 'Approve a channel' },
-  { cmd: '!removechannel', desc: 'Remove bot from channel' },
   { cmd: '!approvedlist', desc: 'View approved channels' },
 ];
 
