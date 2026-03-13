@@ -7,85 +7,30 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/shared.css" />
     <style>
-      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-      body {
-        background: #000;
-        color: #fff;
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
-        min-height: 100vh;
-      }
-
-      nav {
-        border-bottom: 1px solid #1a1a1a;
-        padding: 1rem 1.5rem;
-        position: sticky;
-        top: 0;
-        background: #000;
-        z-index: 10;
-      }
-      nav .inner {
-        max-width: 80rem;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-      }
-      nav .brand { font-size: 0.875rem; font-weight: 700; letter-spacing: 0.1em; text-decoration: none; color: inherit; }
-      nav .brand .dim { color: #666; }
-      nav .channel-title { font-size: 0.875rem; color: #888; }
-      nav .channel-title strong { color: #fff; }
-      .nav-status { font-size: 0.75rem; color: #555; }
-      .nav-status.live { color: #4ade80; }
-
-      main {
-        max-width: 80rem;
-        margin: 0 auto;
-        padding: 2rem 1.5rem;
+      /* Two-column layout */
+      .queue-page {
         display: grid;
-        grid-template-columns: 1fr 320px;
+        grid-template-columns: 1fr 300px;
         gap: 2rem;
         align-items: start;
       }
-
-      @media (max-width: 700px) {
-        main { grid-template-columns: 1fr; }
-      }
+      @media (max-width: 700px) { .queue-page { grid-template-columns: 1fr; } }
 
       /* Queue panel */
-      .panel-label {
-        font-size: 0.7rem;
-        color: #555;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        margin-bottom: 0.75rem;
-      }
-
       .queue-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
       }
       .queue-title { font-size: 1.5rem; font-weight: 800; }
-      .badge {
-        font-size: 0.65rem;
-        font-weight: 700;
-        padding: 0.2rem 0.5rem;
-        border: 1px solid #333;
-        color: #888;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-      }
-      .badge.open { border-color: #4ade80; color: #4ade80; }
+      .queue-meta { font-size: 0.75rem; color: var(--muted); margin-bottom: 1.5rem; }
 
-      .queue-meta { font-size: 0.75rem; color: #888; margin-bottom: 1.5rem; }
-
-      /* Readyup banner */
+      /* Ready-up banner */
       .readyup-banner {
-        border: 1px solid #4ade80;
+        border: 1px solid var(--green);
         padding: 1rem 1.25rem;
         margin-bottom: 1.5rem;
         display: none;
@@ -93,8 +38,8 @@
       }
       .readyup-banner.visible { display: block; }
       @keyframes pulse-border {
-        0%, 100% { border-color: #4ade80; }
-        50% { border-color: #166534; }
+        0%, 100% { border-color: var(--green); }
+        50%       { border-color: #166534; }
       }
       .readyup-top {
         display: flex;
@@ -102,52 +47,37 @@
         justify-content: space-between;
         margin-bottom: 0.5rem;
       }
-      .readyup-label { font-size: 0.65rem; color: #4ade80; text-transform: uppercase; letter-spacing: 0.1em; }
-      .readyup-timer {
-        font-size: 1.25rem;
-        font-weight: 800;
-        color: #4ade80;
-        font-variant-numeric: tabular-nums;
-      }
-      .readyup-timer.urgent { color: #f87171; }
+      .readyup-label { font-size: 0.65rem; color: var(--green); text-transform: uppercase; letter-spacing: 0.1em; }
+      .readyup-timer { font-size: 1.25rem; font-weight: 800; color: var(--green); font-variant-numeric: tabular-nums; }
+      .readyup-timer.urgent { color: var(--red); }
       .readyup-user { font-size: 1rem; font-weight: 700; }
-      .readyup-pending { font-size: 0.75rem; color: #888; margin-top: 0.3rem; }
+      .readyup-pending { font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem; }
 
       /* Queue list */
-      .queue-list { border: 1px solid #1a1a1a; overflow: hidden; }
+      .queue-list { border: 1px solid var(--border); overflow: hidden; }
       .queue-item {
         display: flex;
         align-items: center;
         gap: 1rem;
         padding: 0.7rem 1.25rem;
-        border-bottom: 1px solid #1a1a1a;
+        border-bottom: 1px solid var(--border);
         font-size: 0.875rem;
-        transition: background 0.4s ease;
       }
       .queue-item:last-child { border-bottom: none; }
-      .queue-item.new { background: #0d1f0d; animation: fade-new 2s ease forwards; }
+      .queue-item.new { animation: fade-new 2s ease forwards; }
       @keyframes fade-new {
-        0% { background: #0d2b0d; }
+        0%   { background: #0d2b0d; }
         100% { background: transparent; }
       }
-      .queue-item .pos { color: #888; width: 2rem; text-align: right; flex-shrink: 0; font-size: 0.7rem; }
-      .queue-item .pos.random { color: #888; }
-      .queue-item .name { flex: 1; }
-      .empty { padding: 2.5rem 1.25rem; color: #555; font-size: 0.85rem; text-align: center; border: 1px solid #1a1a1a; }
-
-      /* Right panel */
-      .right-panel { display: flex; flex-direction: column; gap: 1.5rem; }
+      .queue-pos { color: var(--muted); width: 2rem; text-align: right; flex-shrink: 0; font-size: 0.7rem; }
 
       /* Activity log */
-      .log-box {
-        border: 1px solid #1a1a1a;
-        overflow: hidden;
-      }
+      .log-box { border: 1px solid var(--border); overflow: hidden; }
       .log-header {
         padding: 0.6rem 1rem;
-        border-bottom: 1px solid #1a1a1a;
+        border-bottom: 1px solid var(--border);
         font-size: 0.65rem;
-        color: #555;
+        color: var(--muted);
         text-transform: uppercase;
         letter-spacing: 0.1em;
       }
@@ -158,64 +88,43 @@
         gap: 0.5rem;
         min-height: 4rem;
       }
-      .log-entry {
-        font-size: 0.75rem;
-        line-height: 1.4;
-        animation: slide-in 0.2s ease;
-      }
+      .log-entry { font-size: 0.75rem; line-height: 1.4; animation: slide-in 0.2s ease; }
       @keyframes slide-in {
         from { opacity: 0; transform: translateY(-4px); }
         to   { opacity: 1; transform: translateY(0); }
       }
-      .log-entry .log-prefix { color: #4ade80; }
-      .log-entry .log-prefix.draw { color: #facc15; }
-      .log-entry .log-prefix.ready { color: #60a5fa; }
-      .log-entry .log-prefix.lost { color: #f87171; }
-      .log-entry .log-prefix.close { color: #888; }
-      .log-entry .log-text { color: #888; }
-      .log-empty { font-size: 0.75rem; color: #333; padding: 0.5rem 0; }
+      .log-prefix        { color: var(--green); }
+      .log-prefix--draw  { color: var(--yellow); }
+      .log-prefix--ready { color: var(--blue); }
+      .log-prefix--lost  { color: var(--red); }
+      .log-prefix--close { color: var(--muted); }
+      .log-text          { color: var(--muted); }
+      .log-empty         { font-size: 0.75rem; color: var(--subtle); }
+
+      /* Nav extras */
+      .nav-channel { font-size: 0.875rem; color: var(--muted); font-weight: 700; }
+      .nav-status { font-size: 0.75rem; color: var(--subtle); }
+      .nav-status.live { color: var(--green); }
+
+      /* No-channel fallback */
+      .no-channel { color: var(--muted); padding: 4rem 0; grid-column: 1 / -1; }
     </style>
   </head>
   <body>
     <nav>
-      <div class="inner">
-        <a href="/" class="brand"><span class="dim">~/</span>que0p</a>
-        <span class="channel-title" id="nav-channel"></span>
-        <span class="nav-status" id="nav-status">● connecting...</span>
+      <div class="nav-inner">
+        <a href="/" class="nav-brand"><span class="dim">~/</span>que0p</a>
+        <span class="nav-channel" id="nav-channel"></span>
+        <div class="nav-links">
+          <a href="/channels.html" class="nav-link">channels</a>
+          <span class="nav-status" id="nav-status" role="status">● connecting...</span>
+        </div>
       </div>
     </nav>
 
-    <main>
-      <!-- Left: queue -->
-      <div>
-        <div class="queue-header">
-          <h1 class="queue-title" id="channel-title">#</h1>
-          <span class="badge" id="queue-badge">closed</span>
-        </div>
-        <div class="queue-meta" id="queue-meta">loading...</div>
-
-        <div class="readyup-banner" id="readyup-banner">
-          <div class="readyup-top">
-            <span class="readyup-label">⚡ ready-up</span>
-            <span class="readyup-timer" id="readyup-timer">30</span>
-          </div>
-          <div class="readyup-user" id="readyup-user"></div>
-          <div class="readyup-pending" id="readyup-pending"></div>
-        </div>
-
-        <div id="queue-container">
-          <div class="empty">loading...</div>
-        </div>
-      </div>
-
-      <!-- Right: activity log -->
-      <div class="right-panel">
-        <div class="log-box">
-          <div class="log-header">// activity log</div>
-          <div class="log-entries" id="log-entries">
-            <div class="log-empty">no activity yet</div>
-          </div>
-        </div>
+    <main class="page-main">
+      <div class="queue-page" id="queue-page">
+        <div class="no-channel">No channel specified. Use <code>?channel=username</code></div>
       </div>
     </main>
 
@@ -223,12 +132,36 @@
       const params = new URLSearchParams(window.location.search);
       const channel = params.get('channel')?.toLowerCase();
 
-      if (!channel) {
-        document.querySelector('main').innerHTML = '<p style="color:#555;padding:4rem 0;grid-column:1/-1">No channel specified. Use <code>?channel=username</code></p>';
-      } else {
-        document.getElementById('nav-channel').innerHTML = `<strong>#${escHtml(channel)}</strong>`;
-        document.getElementById('channel-title').textContent = '#' + channel;
+      if (channel) {
+        document.getElementById('nav-channel').textContent = '#' + channel;
         document.title = `que0p — #${channel}`;
+
+        document.getElementById('queue-page').innerHTML = `
+          <div>
+            <div class="queue-header">
+              <h1 class="queue-title">#${escHtml(channel)}</h1>
+              <span class="badge badge--closed" id="queue-badge">closed</span>
+            </div>
+            <div class="queue-meta" id="queue-meta">loading...</div>
+            <div class="readyup-banner" id="readyup-banner" role="alert" aria-live="assertive">
+              <div class="readyup-top">
+                <span class="readyup-label">⚡ ready-up</span>
+                <span class="readyup-timer" id="readyup-timer">30</span>
+              </div>
+              <div class="readyup-user" id="readyup-user"></div>
+              <div class="readyup-pending" id="readyup-pending"></div>
+            </div>
+            <div id="queue-container"><div class="empty-state">loading...</div></div>
+          </div>
+          <div>
+            <div class="log-box">
+              <div class="log-header">// activity log</div>
+              <div class="log-entries" id="log-entries" role="log" aria-live="polite">
+                <div class="log-empty">no activity yet</div>
+              </div>
+            </div>
+          </div>
+        `;
 
         let prevPlayers = [];
         let prevOpen = null;
@@ -238,21 +171,13 @@
         const logEntries = [];
         const MAX_LOG = 20;
 
-        function addLog(prefix, prefixClass, text) {
-          logEntries.unshift({ prefix, prefixClass, text, time: new Date() });
+        function addLog(prefixClass, text) {
+          logEntries.unshift({ prefixClass, text });
           if (logEntries.length > MAX_LOG) logEntries.pop();
-          renderLog();
-        }
-
-        function renderLog() {
           const el = document.getElementById('log-entries');
-          if (logEntries.length === 0) {
-            el.innerHTML = '<div class="log-empty">no activity yet</div>';
-            return;
-          }
           el.innerHTML = logEntries.map(e =>
             `<div class="log-entry">
-              <span class="log-prefix ${e.prefixClass}">&gt;</span>
+              <span class="log-prefix ${e.prefixClass ? 'log-prefix--' + e.prefixClass : ''}">&gt;</span>
               <span class="log-text"> ${escHtml(e.text)}</span>
             </div>`
           ).join('');
@@ -262,11 +187,12 @@
           if (countdownInterval) clearInterval(countdownInterval);
           readyupStartTime = Date.now();
           countdownInterval = setInterval(() => {
-            const elapsed = Math.floor((Date.now() - readyupStartTime) / 1000);
-            const remaining = Math.max(0, 30 - elapsed);
-            const timerEl = document.getElementById('readyup-timer');
-            timerEl.textContent = remaining;
-            timerEl.className = 'readyup-timer' + (remaining <= 10 ? ' urgent' : '');
+            const remaining = Math.max(0, 30 - Math.floor((Date.now() - readyupStartTime) / 1000));
+            const el = document.getElementById('readyup-timer');
+            if (el) {
+              el.textContent = remaining;
+              el.className = 'readyup-timer' + (remaining <= 10 ? ' urgent' : '');
+            }
           }, 250);
         }
 
@@ -282,53 +208,41 @@
               document.getElementById('queue-meta').textContent = 'Channel not found or bot not active.';
               document.getElementById('nav-status').textContent = '● offline';
               document.getElementById('nav-status').className = 'nav-status';
-              document.getElementById('queue-container').innerHTML = '<div class="empty">—</div>';
+              document.getElementById('queue-container').innerHTML = '<div class="empty-state">—</div>';
               return;
             }
 
             const data = await res.json();
 
-            // Nav
-            const navStatus = document.getElementById('nav-status');
-            navStatus.textContent = '● live';
-            navStatus.className = 'nav-status live';
+            document.getElementById('nav-status').textContent = '● live';
+            document.getElementById('nav-status').className = 'nav-status live';
 
-            // Detect queue open/close events
+            // Open/close events
             if (prevOpen !== null && prevOpen !== data.open) {
-              if (data.open) {
-                addLog('>', '', `queue opened (${data.mode === 'seq' ? 'sequential' : 'random'})`);
-              } else {
-                addLog('>', 'close', 'queue closed');
-              }
+              addLog(data.open ? '' : 'close', data.open
+                ? `queue opened (${data.mode === 'seq' ? 'sequential' : 'random'})`
+                : 'queue closed');
             }
             prevOpen = data.open;
 
             // Badge
             const badge = document.getElementById('queue-badge');
-            if (data.open) {
-              badge.textContent = data.mode === 'seq' ? 'open · seq' : 'open · random';
-              badge.className = 'badge open';
-            } else {
-              badge.textContent = 'closed';
-              badge.className = 'badge';
-            }
+            badge.textContent = data.open ? (data.mode === 'seq' ? 'open · seq' : 'open · random') : 'closed';
+            badge.className = 'badge ' + (data.open ? 'badge--open' : 'badge--closed');
 
             // Meta
             document.getElementById('queue-meta').textContent =
               data.size === 0 ? 'queue is empty' : `${data.size} player${data.size === 1 ? '' : 's'} in queue`;
 
-            // Detect new players
+            // New / left players
             const prevSet = new Set(prevPlayers);
-            const newPlayers = data.players.filter(p => !prevSet.has(p));
-            newPlayers.forEach(p => addLog('>', '', `${p} joined (#${data.players.indexOf(p) + 1})`));
-            // Detect removed players (left, not drawn)
             const currSet = new Set(data.players);
-            prevPlayers.filter(p => !currSet.has(p) && p !== prevReadyupUser).forEach(p => {
-              // Only log as "left" if they weren't drawn (drawn players go to readyup)
-              if (!data.readyup.current === p && !data.readyup.pending.includes(p)) {
-                addLog('>', 'close', `${p} left the queue`);
-              }
-            });
+            data.players.filter(p => !prevSet.has(p)).forEach(p =>
+              addLog('', `${p} joined (#${data.players.indexOf(p) + 1})`)
+            );
+            prevPlayers.filter(p => !currSet.has(p) && p !== data.readyup?.current).forEach(p =>
+              addLog('close', `${p} left the queue`)
+            );
             prevPlayers = [...data.players];
 
             // Ready-up
@@ -339,54 +253,44 @@
               const pending = data.readyup.pending;
               document.getElementById('readyup-pending').textContent =
                 pending.length > 0 ? `up next: ${pending.join(', ')}` : '';
-
-              // New readyup player
               if (data.readyup.current !== prevReadyupUser) {
-                addLog('>', 'draw', `${data.readyup.current} drawn — waiting for !ready`);
+                addLog('draw', `${data.readyup.current} drawn — waiting for !ready`);
                 startCountdown();
               }
               prevReadyupUser = data.readyup.current;
             } else {
-              if (prevReadyupUser !== null) {
-                stopCountdown();
-                prevReadyupUser = null;
-              }
+              if (prevReadyupUser !== null) { stopCountdown(); prevReadyupUser = null; }
               banner.className = 'readyup-banner';
             }
 
             // Queue list
             const container = document.getElementById('queue-container');
-            const isRandom = data.mode === 'ran';
+            const existing = new Set([...container.querySelectorAll('.queue-item')].map(el => el.dataset.name));
             if (data.players.length === 0) {
-              container.innerHTML = '<div class="empty">no one in the queue yet</div>';
+              container.innerHTML = '<div class="empty-state">no one in the queue yet</div>';
             } else {
-              const existing = new Set(
-                [...container.querySelectorAll('.queue-item')].map(el => el.dataset.name)
-              );
               container.innerHTML = '<div class="queue-list">' +
                 data.players.map((name, i) => {
                   const isNew = !existing.has(name) && existing.size > 0;
-                  const posLabel = isRandom ? '~' : (i + 1);
                   return `<div class="queue-item${isNew ? ' new' : ''}" data-name="${escHtml(name)}">
-                    <span class="pos${isRandom ? ' random' : ''}">${posLabel}</span>
-                    <span class="name">${escHtml(name)}</span>
+                    <span class="queue-pos">${data.mode === 'ran' ? '~' : i + 1}</span>
+                    <span>${escHtml(name)}</span>
                   </div>`;
                 }).join('') +
               '</div>';
             }
-
           } catch {
             document.getElementById('nav-status').textContent = '● offline';
             document.getElementById('nav-status').className = 'nav-status';
           }
         }
 
-        function escHtml(s) {
-          return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-        }
-
         refresh();
         setInterval(refresh, 3000);
+      }
+
+      function escHtml(s) {
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
       }
     </script>
   </body>

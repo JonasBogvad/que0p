@@ -7,86 +7,39 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/shared.css" />
     <style>
-      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-      body {
-        background: #000;
-        color: #fff;
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
-        min-height: 100vh;
-      }
-
-      /* Nav — matches landing */
-      nav {
-        border-bottom: 1px solid #262626;
-        padding: 1rem 1.5rem;
-        position: sticky;
-        top: 0;
-        background: #000;
-        z-index: 10;
-      }
-      nav .inner {
-        max-width: 64rem;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-      nav .brand { font-size: 0.875rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
-      nav .brand span { color: #999; }
-      nav a.btn {
-        font-family: inherit;
-        font-size: 0.75rem;
-        font-weight: 700;
-        background: #fff;
-        color: #000;
-        border: none;
-        padding: 0.4rem 0.85rem;
-        cursor: pointer;
-        text-decoration: none;
-        letter-spacing: 0.03em;
-      }
-      nav a.btn:hover { background: #e5e5e5; }
-
-      /* Page */
-      main {
-        max-width: 36rem;
-        margin: 0 auto;
-        padding: 6rem 1.5rem 4rem;
-      }
-      .prompt { color: #888; font-size: 0.8rem; margin-bottom: 2.5rem; }
-      .prompt .bang { color: #f87171; }
-      h1 { font-size: 1.75rem; font-weight: 800; color: #f87171; margin-bottom: 0; }
-      .divider { border: none; border-top: 1px solid #1a1a1a; margin: 2rem 0; }
-      p { color: #999; font-size: 0.85rem; line-height: 1.7; }
-      .reason { color: #888; margin-bottom: 0.5rem; }
-      a { color: #fff; text-decoration: underline; text-underline-offset: 4px; }
-      a:hover { color: #999; }
-      .twitch { color: #9146FF; }
-      .back { font-size: 0.8rem; }
+      h1 { font-size: 1.75rem; font-weight: 800; color: var(--red); margin-bottom: 0; }
+      p { color: var(--muted); font-size: 0.85rem; line-height: 1.7; }
+      .reason { color: var(--muted); margin-bottom: 0.5rem; }
+      .twitch-link { color: var(--purple); }
     </style>
   </head>
   <body>
     <nav>
-      <div class="inner">
-        <a href="/" class="brand" style="text-decoration:none;color:inherit"><span>~/</span>que0p</a>
-        <a href="/add-channel" class="btn">add-channel</a>
+      <div class="nav-inner">
+        <a href="/" class="nav-brand"><span class="dim">~/</span>que0p</a>
+        <div class="nav-links">
+          <a href="/channels.html" class="nav-link">channels</a>
+          <a href="/add-channel" class="nav-btn">add-channel</a>
+        </div>
       </div>
     </nav>
-    <main>
+
+    <main class="page-main--narrow">
       <div class="prompt"><span class="bang">!</span> que0p --join-channel</div>
       <h1>✗ access denied</h1>
       <hr class="divider" />
       <p class="reason" id="reason"></p>
       <p>
         Whitelist only — ask
-        <a href="https://twitch.tv/swisz" target="_blank" rel="noopener noreferrer" class="twitch">twitch.tv/swisz</a>
+        <a href="https://twitch.tv/swisz" target="_blank" rel="noopener noreferrer" class="twitch-link">twitch.tv/swisz</a>
         to get approved.
       </p>
       <hr class="divider" />
-      <a href="/" class="back">← back to que0p</a>
+      <a href="/" class="back-link">← back to que0p</a>
     </main>
+
     <script>
       const params = new URLSearchParams(window.location.search);
       const reason = params.get('reason');

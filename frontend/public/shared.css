@@ -1,0 +1,190 @@
+/* ============================================================
+   que0p — shared styles
+   All static pages import this file.
+   No inline styles allowed — put everything here or in a
+   page-specific <style> block using these custom properties.
+   ============================================================ */
+
+/* --- Tokens ------------------------------------------------ */
+:root {
+  --bg:           #000;
+  --fg:           #fff;
+  --muted:        #888;   /* AA compliant on black: 5.9:1 */
+  --subtle:       #555;   /* decorative / non-text only    */
+  --border:       #1a1a1a;
+  --border-nav:   #1a1a1a;
+  --green:        #4ade80;
+  --red:          #f87171;
+  --blue:         #60a5fa;
+  --yellow:       #facc15;
+  --purple:       #9146FF;
+  --font:         'JetBrains Mono', 'Courier New', monospace;
+}
+
+/* --- Reset ------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  min-height: 100vh;
+}
+
+/* --- Nav --------------------------------------------------- */
+nav {
+  border-bottom: 1px solid var(--border-nav);
+  padding: 1rem 1.5rem;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 10;
+}
+
+.nav-inner {
+  max-width: 80rem;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.nav-brand {
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  color: var(--fg);
+}
+
+.nav-brand .dim { color: var(--muted); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.nav-link {
+  font-family: var(--font);
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.nav-link:hover,
+.nav-link:focus-visible { color: var(--fg); }
+
+.nav-btn {
+  font-family: var(--font);
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--fg);
+  color: var(--bg);
+  border: none;
+  padding: 0.4rem 0.85rem;
+  cursor: pointer;
+  text-decoration: none;
+  letter-spacing: 0.03em;
+  transition: background 0.15s;
+}
+
+.nav-btn:hover,
+.nav-btn:focus-visible { background: #e5e5e5; }
+
+/* --- Focus ------------------------------------------------- */
+:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
+
+/* --- Page shell -------------------------------------------- */
+.page-main {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+.page-main--narrow {
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 6rem 1.5rem 4rem;
+}
+
+.page-main--mid {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+/* --- Prompt line ------------------------------------------ */
+.prompt {
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin-bottom: 2.5rem;
+}
+
+.prompt .dollar { color: var(--green); }
+.prompt .bang   { color: var(--red); }
+
+/* --- Divider ---------------------------------------------- */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2rem 0;
+}
+
+/* --- Badge ------------------------------------------------ */
+.badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid var(--subtle);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.badge--open  { border-color: var(--green); color: var(--green); }
+.badge--closed { border-color: var(--subtle); color: var(--muted); }
+
+/* --- Empty state ------------------------------------------ */
+.empty-state {
+  padding: 2.5rem 1.25rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+
+/* --- Back link -------------------------------------------- */
+.back-link {
+  color: var(--fg);
+  font-size: 0.8rem;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.back-link:hover,
+.back-link:focus-visible { color: var(--muted); }
+
+/* --- Footer note ------------------------------------------ */
+.page-footer {
+  margin-top: 3rem;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.page-footer a {
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.page-footer a:hover,
+.page-footer a:focus-visible { color: var(--fg); }
+
+/* --- Generic links ---------------------------------------- */
+a { color: var(--fg); }
