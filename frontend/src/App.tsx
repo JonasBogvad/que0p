@@ -203,7 +203,19 @@ function CommandTable({
   );
 }
 
+function useStats() {
+  const [stats, setStats] = useState<{ queuesStarted: number; playersConfirmed: number; channelsAllTime: number } | null>(null);
+  useEffect(() => {
+    fetch('/api/stats')
+      .then(r => r.json())
+      .then(setStats)
+      .catch(() => {});
+  }, []);
+  return stats;
+}
+
 export default function App() {
+  const stats = useStats();
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Nav */}
@@ -253,6 +265,13 @@ export default function App() {
             </a>{' '}
             to get approved
           </p>
+          {stats && (
+            <p className="mt-6 text-xs text-muted-foreground font-mono">
+              <span className="text-foreground">{stats.channelsAllTime}</span> channels &nbsp;·&nbsp;{' '}
+              <span className="text-foreground">{stats.queuesStarted}</span> queues run &nbsp;·&nbsp;{' '}
+              <span className="text-foreground">{stats.playersConfirmed}</span> players confirmed
+            </p>
+          )}
         </div>
       </section>
 

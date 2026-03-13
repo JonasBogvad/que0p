@@ -7,6 +7,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 import * as channels from '../state/channels.js';
 import { joinChannel } from '../botActions.js';
 import { initChannelState, getChannelState } from '../state/perChannel.js';
+import { getStats, incrementChannelsAllTime } from '../state/stats.js';
 
 export function startWebServer(): void {
   const app = express();
@@ -76,6 +77,10 @@ export function startWebServer(): void {
         drawnBatch: readyup.getDrawnBatch(),
       },
     });
+  });
+
+  app.get('/api/stats', (_req, res) => {
+    res.json(getStats());
   });
 
   app.get('/health', (_req, res) => {
@@ -172,6 +177,7 @@ export function startWebServer(): void {
       await channels.addActive(login);
       await initChannelState(login);
       await joinChannel(login, true);
+      void incrementChannelsAllTime();
 
       console.log(`[web] /callback — bot joined ${login}`);
       res.redirect(`/success.html?channel=${encodeURIComponent(login)}`);

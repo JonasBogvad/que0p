@@ -1,3 +1,5 @@
+import { incrementPlayersConfirmed } from '../state/stats.js';
+
 type SayFn = (msg: string) => void | Promise<void>;
 
 const READY_TIMEOUT_MS = 30_000;
@@ -68,6 +70,7 @@ export function createReadyupState(): ReadyupState {
       _currentWinner = null;
       void say(`> @${winner} ready — slot confirmed`);
       _lastEvent = { type: 'ready', login: winner };
+      void incrementPlayersConfirmed();
       if (_onReady) _onReady(winner);
       processNext();
       return true;

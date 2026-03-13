@@ -3,6 +3,7 @@ import { Bot } from '@twurple/easy-bot';
 import { createAuthProvider } from './auth.js';
 import { config } from './config.js';
 import * as channels from './state/channels.js';
+import { loadStats } from './state/stats.js';
 import { initChannelState, getAllChannelStates } from './state/perChannel.js';
 import { setBotInstance } from './botActions.js';
 import { createRateLimitedSay } from './util/rateLimiter.js';
@@ -45,6 +46,7 @@ async function main() {
 
   // Load persisted channel lists (owner channel always included)
   await channels.loadChannels();
+  await loadStats();
 
   // Init per-channel state for all active channels (loads persisted queues)
   const activeChannels = channels.getActive();
