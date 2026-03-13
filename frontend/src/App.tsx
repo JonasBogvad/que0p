@@ -180,8 +180,20 @@ export default function App() {
         <div className="max-w-2xl mx-auto">
           <div className="text-5xl mb-6">💣</div>
           <h2 className="text-4xl font-black mb-4">Ready to run it?</h2>
-          <p className="text-muted-foreground mb-8">
+          <p className="text-muted-foreground mb-4">
             Authorize Que0p and it joins your channel instantly. No setup, no downloads.
+          </p>
+          <p className="text-sm text-muted-foreground mb-8">
+            Access is whitelisted —{' '}
+            <a
+              href="https://twitch.tv/swisz"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              ask swisz on Twitch
+            </a>{' '}
+            to get approved first.
           </p>
           <a href="/add-channel">
             <Button size="lg" className="text-base px-10">
