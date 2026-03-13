@@ -178,6 +178,7 @@ export default function App() {
           </span>
           <div className="flex items-center gap-4">
             <a href="/channels.html" className="text-sm text-muted-foreground hover:text-foreground transition-colors">channels</a>
+            <a href="/faq.html" className="text-sm text-muted-foreground hover:text-foreground transition-colors">faq</a>
             <a href="/add-channel">
               <Button size="sm">add-channel</Button>
             </a>
