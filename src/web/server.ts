@@ -6,7 +6,7 @@ import { config } from '../config.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 import * as channels from '../state/channels.js';
 import { joinChannel } from '../botActions.js';
-import { initChannelState } from '../state/perChannel.js';
+import { initChannelState, getChannelState } from '../state/perChannel.js';
 
 export function startWebServer(): void {
   const app = express();
