@@ -12,7 +12,7 @@ export async function joinChannel(channel: string, firstJoin = false): Promise<v
   if (firstJoin) {
     // Small delay to ensure the bot is ready to send messages
     setTimeout(() => {
-      void _bot!.say(channel, '👋 que0p is here! Type !help to see commands. Don\'t forget to /mod que0p so I can manage the queue properly!');
+      void _bot!.say(channel, '👋 que0p is here! Type !help to see all commands.');
     }, 3000);
   }
 }
