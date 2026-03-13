@@ -249,7 +249,7 @@ export default function App() {
           <div className="flex flex-col md:flex-row gap-6">
             <CommandTable commands={viewerCommands} label="viewers" />
             <CommandTable commands={modCommands} label="mods" />
-            <CommandTable commands={adminCommands} label="admin (owner only)" />
+            <CommandTable commands={adminCommands} label="swisz channel only" />
           </div>
         </div>
       </section>
