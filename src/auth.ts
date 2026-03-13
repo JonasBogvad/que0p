@@ -3,6 +3,13 @@ import { readFile, writeFile } from 'fs/promises';
 import { config } from './config.js';
 import { TOKENS_PATH } from './paths.js';
 
+// Latest access token — updated on load and on every refresh
+let _accessToken: string | null = null;
+
+export function getAccessToken(): string | null {
+  return _accessToken;
+}
+
 async function loadTokenData(): Promise<unknown> {
   // Always try the file first — on Fly the volume (/data/tokens.json) holds the
   // latest refreshed token, which is more up-to-date than the TWITCH_BOT_TOKENS
@@ -26,12 +33,13 @@ export async function createAuthProvider(): Promise<RefreshingAuthProvider> {
   });
 
   authProvider.onRefresh(async (_userId, newTokenData) => {
-    // Always persist refreshed tokens to file (works locally and on Fly volume)
+    _accessToken = newTokenData.accessToken;
     await writeFile(TOKENS_PATH, JSON.stringify(newTokenData, null, 2), 'utf-8');
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tokenData = await loadTokenData() as any;
+  _accessToken = tokenData.accessToken as string;
   await authProvider.addUserForToken(tokenData, ['chat']);
 
   return authProvider;

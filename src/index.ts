@@ -70,7 +70,7 @@ async function main() {
   });
 
   // Patch bot.say to send via Helix API (gets the bot badge) with a rate limiter.
-  const helixSay = createHelixSay(authProvider);
+  const helixSay = createHelixSay();
   (bot as unknown as { say: typeof bot.say }).say = createRateLimitedSay(
     (channel: string, text: string) => helixSay(channel, text),
   ) as typeof bot.say;

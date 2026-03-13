@@ -1,4 +1,4 @@
-import type { RefreshingAuthProvider } from '@twurple/auth';
+import { getAccessToken } from '../auth.js';
 import { config } from '../config.js';
 
 // Cache channel login → numeric broadcaster ID (never changes)
@@ -29,23 +29,21 @@ async function getBroadcasterId(channel: string, accessToken: string): Promise<s
   return id;
 }
 
-export function createHelixSay(
-  authProvider: RefreshingAuthProvider,
-): (channel: string, message: string) => Promise<void> {
+export function createHelixSay(): (channel: string, message: string) => Promise<void> {
   return async function helixSay(channel: string, message: string): Promise<void> {
-    const tokenData = await authProvider.getAccessTokenForUser(config.botUserId);
-    if (!tokenData) {
-      console.error('[helix] No token available for bot user');
+    const accessToken = getAccessToken();
+    if (!accessToken) {
+      console.error('[helix] No access token available');
       return;
     }
 
-    const broadcasterId = await getBroadcasterId(channel, tokenData.accessToken);
+    const broadcasterId = await getBroadcasterId(channel, accessToken);
     if (!broadcasterId) return;
 
     const res = await fetch('https://api.twitch.tv/helix/chat/messages', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${tokenData.accessToken}`,
+        'Authorization': `Bearer ${accessToken}`,
         'Client-Id': config.clientId,
         'Content-Type': 'application/json',
       },
