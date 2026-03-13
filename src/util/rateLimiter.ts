@@ -1,7 +1,7 @@
 // Wraps any say function to enforce a minimum gap between messages.
 // Excess messages are queued and drained in order.
 
-const RATE_LIMIT_MS = 1500;
+const RATE_LIMIT_MS = 1200;
 
 interface PendingEntry {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
