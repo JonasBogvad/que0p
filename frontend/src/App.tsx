@@ -123,6 +123,18 @@ export default function App() {
               $ add-channel
             </Button>
           </a>
+          <p className="mt-4 text-xs text-muted-foreground">
+            whitelist only —{' '}
+            <a
+              href="https://twitch.tv/swisz"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-foreground underline underline-offset-4"
+            >
+              twitch.tv/swisz
+            </a>{' '}
+            to get approved
+          </p>
         </div>
       </section>
 
