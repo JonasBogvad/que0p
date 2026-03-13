@@ -112,8 +112,8 @@ export default function App() {
             <span className="text-foreground">$</span> ./que0p --help
           </div>
           <h1 className="text-5xl sm:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
-            CS queue bot<br />
-            <span className="text-muted-foreground">for Twitch.</span>
+            Twitch queue bot<br />
+            <span className="text-muted-foreground">for any game.</span>
           </h1>
           <p className="text-muted-foreground mb-10 max-w-xl leading-relaxed">
             Fair draws, ready-up timers, activity checks. Keep the lobby moving — all from Twitch chat.
@@ -251,7 +251,7 @@ export default function App() {
       {/* Footer */}
       <footer className="border-t border-border px-6 py-6">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
-          <span>que0p v1.0.0 — CS queue bot for Twitch</span>
+          <span>que0p v1.0.0 — queue bot for Twitch</span>
           <a href="/add-channel" className="hover:text-foreground transition-colors">
             $ add-channel →
           </a>
