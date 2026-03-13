@@ -232,6 +232,11 @@ export default function App() {
               </div>
             ))}
           </div>
+          <div className="mt-6 text-right">
+            <a href="/faq.html" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              questions? → faq
+            </a>
+          </div>
         </div>
       </section>
 

@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>que0p — faq</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/shared.css" />
+    <style>
+      .faq-list { display: flex; flex-direction: column; gap: 0; }
+
+      .faq-item {
+        border: 1px solid var(--border);
+        margin-top: -1px;
+      }
+
+      .faq-q {
+        width: 100%;
+        background: none;
+        border: none;
+        color: var(--fg);
+        font-family: var(--font);
+        font-size: 0.875rem;
+        font-weight: 700;
+        text-align: left;
+        padding: 1rem 1.25rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        transition: background 0.1s;
+      }
+
+      .faq-q:hover { background: #0d0d0d; }
+
+      .faq-q-prefix { color: var(--green); margin-right: 0.5rem; font-weight: 400; }
+
+      .faq-chevron {
+        color: var(--muted);
+        font-size: 0.75rem;
+        flex-shrink: 0;
+        transition: transform 0.2s;
+      }
+
+      .faq-item.open .faq-chevron { transform: rotate(90deg); }
+
+      .faq-a {
+        display: none;
+        padding: 0 1.25rem 1rem 1.25rem;
+        border-top: 1px solid var(--border);
+        font-size: 0.8rem;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .faq-item.open .faq-a { display: block; }
+
+      .faq-a code {
+        color: var(--fg);
+        background: var(--border);
+        padding: 0.1em 0.35em;
+        font-family: var(--font);
+        font-size: 0.8rem;
+      }
+
+      .faq-a p + p { margin-top: 0.6rem; }
+
+      .section-label {
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--muted);
+        margin: 2.5rem 0 0.75rem;
+      }
+
+      .section-label:first-child { margin-top: 0; }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="nav-inner">
+        <a href="/" class="nav-brand"><span class="dim">~/</span>que0p</a>
+        <div class="nav-links">
+          <a href="/channels.html" class="nav-link">channels</a>
+          <a href="/add-channel" class="nav-btn">$ add-channel</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="page-main--mid">
+      <div class="prompt"><span class="dollar">$</span> cat faq.txt</div>
+
+      <div class="section-label">// queue flow</div>
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">
+            <span><span class="faq-q-prefix">Q.</span> What's the basic flow?</span>
+            <span class="faq-chevron">▶</span>
+          </button>
+          <div class="faq-a">
+            <p><code>!open seq</code> or <code>!open ran</code> → viewers type <code>!join</code> → mod types <code>!draw</code> → drawn players type <code>!ready</code> within 30s → confirmed players appear in the lobby.</p>
+            <p>Repeat <code>!draw</code> to fill more slots. Use <code>!stop</code> when done taking new players, or <code>!reset</code> to wipe everything and start fresh.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">
+            <span><span class="faq-q-prefix">Q.</span> What's the difference between <code>!stop</code> and <code>!reset</code>?</span>
+            <span class="faq-chevron">▶</span>
+          </button>
+          <div class="faq-a">
+            <p><code>!stop</code> closes the queue so no new players can join — but everyone already in the queue stays. The lobby stays intact too. You can reopen with <code>!open</code> and continue drawing.</p>
+            <p><code>!reset</code> wipes everything: queue, lobby, and draw state. Everyone has to <code>!join</code> again from scratch.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">
+            <span><span class="faq-q-prefix">Q.</span> What's the difference between <code>seq</code> and <code>ran</code>?</span>
+            <span class="faq-chevron">▶</span>
+          </button>
+          <div class="faq-a">
+            <p><code>!open seq</code> — sequential. Players are drawn in the order they joined. First in, first out.</p>
+            <p><code>!open ran</code> — random. Players are drawn randomly from the queue regardless of join order.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">
+            <span><span class="faq-q-prefix">Q.</span> Can I draw more than one player at once?</span>
+            <span class="faq-chevron">▶</span>
+          </button>
+          <div class="faq-a">
+            <p>Yes — <code>!draw 3</code> draws up to 3 players. They are prompted one at a time: each has 30 seconds to <code>!ready</code> before the next is called. You can draw up to 5 at once.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="section-label">// ready-up</div>
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">
+            <span><span class="faq-q-prefix">Q.</span> What happens if a drawn player doesn't respond?</span>
+            <span class="faq-chevron">▶</span>
+          </button>
+          <div class="faq-a">
+            <p>They have 30 seconds to type <code>!ready</code>. If the timer runs out, their slot is lost and the next player in the drawn batch is prompted. They stay in the queue and can be drawn again next time.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">
+            <span><span class="faq-q-prefix">Q.</span> If I <code>!skip</code>, am I removed from the queue?</span>
+            <span class="faq-chevron">▶</span>
+          </button>
+          <div class="faq-a">
+            <p>No. <code>!skip</code> only passes your current draw slot — you stay in the queue and can be drawn again. Mods can also skip on a player's behalf.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">
+            <span><span class="faq-q-prefix">Q.</span> What is the lobby? When does it clear?</span>
+            <span class="faq-chevron">▶</span>
+          </button>
+          <div class="faq-a">
+            <p>The lobby shows players who have confirmed their slot with <code>!ready</code>. It persists across multiple <code>!draw</code> rounds so you always know who is already in.</p>
+            <p>The lobby only clears when a mod types <code>!reset</code>.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="section-label">// activity check</div>
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">
+            <span><span class="faq-q-prefix">Q.</span> What is the activity check?</span>
+            <span class="faq-chevron">▶</span>
+          </button>
+          <div class="faq-a">
+            <p>Players who haven't chatted in the last 10 minutes are skipped when drawn. This prevents AFK players from holding up the lobby. They stay in the queue — they just need to type something to become active again.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="section-label">// queue page</div>
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">
+            <span><span class="faq-q-prefix">Q.</span> How do viewers watch the queue live?</span>
+            <span class="faq-chevron">▶</span>
+          </button>
+          <div class="faq-a">
+            <p>Share <code>/queue.html?channel=yourname</code> — it updates every 3 seconds and shows the queue, lobby, active ready-up countdown, and an activity log of draws and outcomes.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">
+            <span><span class="faq-q-prefix">Q.</span> Can I use the queue page as a stream overlay?</span>
+            <span class="faq-chevron">▶</span>
+          </button>
+          <div class="faq-a">
+            <p>Yes — add it as a browser source in OBS or Streamlabs. It's designed to be readable at a glance with the two-column layout and live countdown.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="page-footer">
+        <a href="/">← back to home</a>
+      </div>
+    </main>
+
+    <script>
+      document.querySelectorAll('.faq-q').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = btn.closest('.faq-item');
+          const isOpen = item.classList.contains('open');
+          item.classList.toggle('open', !isOpen);
+          btn.setAttribute('aria-expanded', String(!isOpen));
+        });
+      });
+    </script>
+  </body>
+</html>
