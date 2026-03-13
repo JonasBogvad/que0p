@@ -91,6 +91,7 @@ export function createReadyupState(): ReadyupState {
       _onSlotLost = null;
       _onReady = null;
       _say = null;
+      _drawnBatch = [];
     },
 
     getPendingWinner() { return _currentWinner; },
