@@ -9,7 +9,7 @@
     "dev": "tsx watch src/index.ts",
     "setup": "tsx src/setup-tokens.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky"
+    "prepare": "node -e \"if(process.env.NODE_ENV!=='production')require('child_process').execSync('husky',{stdio:'inherit'})\""
   },
   "keywords": [],
   "author": "",

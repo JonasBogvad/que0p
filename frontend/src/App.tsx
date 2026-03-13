@@ -170,9 +170,12 @@ export default function App() {
           <span className="text-sm font-bold tracking-widest">
             <span className="text-muted-foreground">~/</span>que0p
           </span>
-          <a href="/add-channel">
-            <Button size="sm">add-channel</Button>
-          </a>
+          <div className="flex items-center gap-4">
+            <a href="/channels.html" className="text-sm text-muted-foreground hover:text-foreground transition-colors">channels</a>
+            <a href="/add-channel">
+              <Button size="sm">add-channel</Button>
+            </a>
+          </div>
         </div>
       </nav>
 

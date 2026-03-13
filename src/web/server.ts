@@ -37,6 +37,15 @@ export function startWebServer(): void {
   const frontendDist = join(__dirname, '../../frontend/dist');
   app.use(express.static(frontendDist));
 
+  app.get('/api/channels', (_req, res) => {
+    const active = channels.getActive();
+    const data = active.map((ch) => {
+      const { queue } = getChannelState(ch);
+      return { channel: ch, open: queue.isQueueOpen(), size: queue.size() };
+    });
+    res.json(data);
+  });
+
   app.get('/api/queue/:channel', (req, res) => {
     const channel = req.params['channel']?.toLowerCase();
     if (!channel || !channels.getActive().includes(channel)) {
