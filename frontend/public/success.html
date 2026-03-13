@@ -79,6 +79,7 @@
       <hr class="divider" />
       <p>Type <strong>!help</strong> in your chat to see all commands.</p>
       <p style="margin-top:0.5rem">The bot is live and ready to manage your queue.</p>
+      <p style="margin-top:0.5rem">Watch your queue live at <a id="queue-link" href="#" style="color:#4ade80;text-decoration:underline;text-underline-offset:4px"></a></p>
       <hr class="divider" />
       <p style="color:#333; font-size:0.75rem;">// swisz: gl hf — don't go AFK or you'll lose your slot 👀</p>
       <hr class="divider" />
@@ -88,6 +89,12 @@
       const params = new URLSearchParams(window.location.search);
       const ch = params.get('channel');
       document.getElementById('channel').textContent = ch ? '#' + ch : '';
+      if (ch) {
+        const link = document.getElementById('queue-link');
+        const url = `${location.origin}/queue.html?channel=${ch}`;
+        link.href = url;
+        link.textContent = url;
+      }
     </script>
   </body>
 </html>
