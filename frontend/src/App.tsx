@@ -259,7 +259,7 @@ export default function App() {
       {/* Features */}
       <section className="px-6 py-20 border-t border-border">
         <div className="max-w-5xl mx-auto">
-          <TypedPrompt text="cat features.txt" />
+          <TypedPrompt text="que0p --features" />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-border">
             {features.map((f) => (
               <div key={f.title} className="bg-background p-6">
@@ -280,7 +280,7 @@ export default function App() {
       {/* How it works */}
       <section className="px-6 py-20 border-t border-border">
         <div className="max-w-5xl mx-auto">
-          <TypedPrompt text="cat how-it-works.txt" />
+          <TypedPrompt text="que0p --how-it-works" />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
             {steps.map((s) => (
               <div key={s.n}>
