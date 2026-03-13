@@ -1,5 +1,65 @@
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+
+const TWITCH_TEXT = 'Twitch';
+
+function TwitchLogo({ visible }: { visible: boolean }) {
+  return (
+    <span
+      style={{
+        display: 'inline-block',
+        verticalAlign: 'middle',
+        marginRight: '0.25em',
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateY(0)' : 'translateY(4px)',
+        transition: 'opacity 0.4s ease, transform 0.4s ease',
+      }}
+    >
+      <svg
+        height="0.85em"
+        viewBox="0 0 24 24"
+        fill="#9146FF"
+        xmlns="http://www.w3.org/2000/svg"
+        style={{ display: 'inline', verticalAlign: 'middle' }}
+      >
+        <path d="M2.149 0L.537 4.119v16.836h5.731V24l4.286-4.286h3.428L22.286 12V0H2.149zm18.137 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.429v9.429zM16.571 5.143h-1.714v4.571h1.714V5.143zm-4.571 0H10.286v4.571H12V5.143z" />
+      </svg>
+    </span>
+  );
+}
+
+function TypedTwitch() {
+  const [logoVisible, setLogoVisible] = useState(false);
+  const [typed, setTyped] = useState('');
+
+  useEffect(() => {
+    const logoTimer = setTimeout(() => setLogoVisible(true), 400);
+    let i = 0;
+    const typeTimer = setTimeout(() => {
+      const interval = setInterval(() => {
+        i++;
+        setTyped(TWITCH_TEXT.slice(0, i));
+        if (i >= TWITCH_TEXT.length) clearInterval(interval);
+      }, 80);
+      return () => clearInterval(interval);
+    }, 900);
+    return () => {
+      clearTimeout(logoTimer);
+      clearTimeout(typeTimer);
+    };
+  }, []);
+
+  return (
+    <>
+      <TwitchLogo visible={logoVisible} />
+      <span>{typed}</span>
+      {typed.length < TWITCH_TEXT.length && (
+        <span style={{ opacity: 0.5 }}>|</span>
+      )}
+    </>
+  );
+}
 
 const features = [
   {
@@ -112,7 +172,7 @@ export default function App() {
             <span className="text-foreground">$</span> ./que0p --help
           </div>
           <h1 className="text-5xl sm:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
-            Twitch queue bot<br />
+            <TypedTwitch /> queue bot<br />
             <span className="text-muted-foreground">for any game.</span>
           </h1>
           <p className="text-muted-foreground mb-10 max-w-xl leading-relaxed">
