@@ -119,11 +119,6 @@ const features = [
     title: 'Lobby Tracker',
     desc: 'Confirmed players build up a lobby list. Persists until !qreset — always know who\'s in.',
   },
-  {
-    icon: '#',
-    title: 'Multi-Channel',
-    desc: 'Works across multiple streams at once. Each channel has its own isolated queue.',
-  },
 ];
 
 const viewerCommands = [
@@ -265,7 +260,7 @@ export default function App() {
       <section className="px-6 py-20 border-t border-border">
         <div className="max-w-5xl mx-auto">
           <TypedPrompt text="cat features.txt" />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-px bg-border">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-border">
             {features.map((f) => (
               <div key={f.title} className="bg-background p-6">
                 <div className="text-xl font-black mb-4 text-muted-foreground">{f.icon}</div>
