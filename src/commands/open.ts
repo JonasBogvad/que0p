@@ -12,15 +12,15 @@ export const openCommand = createBotCommand('open', async (params, ctx) => {
 
   const { queue } = getChannelState(ctx.broadcasterName);
   if (queue.isQueueOpen()) {
-    await ctx.say('❌ Queue is already open.');
+    await ctx.say('❌ Queue is already open!');
     return;
   }
 
   queue.open(arg);
   const modeName = arg === 'seq' ? 'Sequential' : 'Random';
-  await ctx.say(`✅ Queue is now open! Type !join to enter. (${modeName} mode)`);
+  await ctx.say(`🔫 Queue is OPEN! Type !join to get in the lobby. (${modeName} mode)`);
 
   queue.startAnnounce(() => {
-    void ctx.say(`📋 The queue is open! Type !join to enter. (${modeName} mode)`);
+    void ctx.say(`🔫 Queue is OPEN! Type !join to get in the lobby. (${modeName} mode)`);
   });
 });

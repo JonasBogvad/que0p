@@ -8,5 +8,5 @@ export const resetCommand = createBotCommand('reset', async (_params, ctx) => {
   queue.stopAnnounce();
   queue.close();
   queue.clear();
-  await ctx.say('✅ Queue has been reset and any pending ready-up cancelled.');
+  await ctx.say('🔄 Queue wiped. Starting fresh!');
 });

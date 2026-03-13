@@ -17,7 +17,7 @@ export const drawCommand = createBotCommand('draw', async (params, ctx) => {
   const { queue, activity, readyup } = getChannelState(ctx.broadcasterName);
 
   if (readyup.isWaitingForReady()) {
-    await ctx.say(`⚔️ Already waiting for @${readyup.getPendingWinner()} to ready up.`);
+    await ctx.say(`💣 Still waiting for @${readyup.getPendingWinner()} to ready up!`);
     return;
   }
 
@@ -39,7 +39,7 @@ export const drawCommand = createBotCommand('draw', async (params, ctx) => {
   }
 
   if (winners.length === 0) {
-    await ctx.say('⚔️ No eligible players in the queue. (Must have chatted in the last 10 min)');
+    await ctx.say('💤 No active players in the queue. (Must have chatted in the last 10 min)');
     return;
   }
 

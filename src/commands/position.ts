@@ -9,8 +9,8 @@ export const positionCommand = createBotCommand('pos', async (_params, ctx) => {
   const list = queue.list();
   const idx = list.indexOf(ctx.userName);
   if (idx === -1) {
-    await ctx.say(`📋 @${ctx.userName} you're not in the queue.`);
+    await ctx.say(`🎯 @${ctx.userName} you're not in the queue — type !join to get in!`);
   } else {
-    await ctx.say(`📋 @${ctx.userName} you're #${idx + 1} of ${list.length} in the queue.`);
+    await ctx.say(`🎯 @${ctx.userName} you're #${idx + 1} of ${list.length} — stay sharp!`);
   }
 });

@@ -32,13 +32,13 @@ export function createReadyupState(): ReadyupState {
     }
     const winner = _pendingList.shift()!;
     _currentWinner = winner;
-    void _say(`⚔️ @${winner} — you were drawn! Type !ready within 30 seconds or !skip to pass.`);
+    void _say(`💣 @${winner} — you've been picked! Type !ready within 30s or !skip to pass.`);
     _readyTimer = setTimeout(() => {
       _readyTimer = null;
       const timedOut = _currentWinner;
       if (timedOut === null || _say === null) return;
       _currentWinner = null;
-      void _say(`⚔️ @${timedOut} did not respond in time. Slot lost.`);
+      void _say(`⏰ @${timedOut} took too long. Slot lost!`);
       if (_onSlotLost) _onSlotLost(timedOut);
       processNext();
     }, READY_TIMEOUT_MS);
@@ -60,7 +60,7 @@ export function createReadyupState(): ReadyupState {
       if (_readyTimer !== null) { clearTimeout(_readyTimer); _readyTimer = null; }
       const winner = _currentWinner;
       _currentWinner = null;
-      void say(`⚔️ @${winner} is ready! GL HF!`);
+      void say(`⚡ @${winner} is ready! GL HF — frag out!`);
       if (_onReady) _onReady(winner);
       processNext();
       return true;
@@ -71,7 +71,7 @@ export function createReadyupState(): ReadyupState {
       if (_readyTimer !== null) { clearTimeout(_readyTimer); _readyTimer = null; }
       const skipped = _currentWinner;
       _currentWinner = null;
-      void say(`⚔️ @${skipped} passed. Moving on...`);
+      void say(`💨 @${skipped} passed. Moving on...`);
       if (_onSlotLost) _onSlotLost(skipped);
       processNext();
     },
