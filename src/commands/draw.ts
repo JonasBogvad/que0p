@@ -52,7 +52,10 @@ export const drawCommand = createBotCommand('draw', async (params, ctx) => {
   console.log(`[cmd] ${ctx.userName} drew ${winners.length} player(s) in #${ctx.broadcasterName}: ${winners.join(', ')}`);
   readyup.startMultiReadyUp(
     winners,
-    (login) => { console.log(`[readyup] Slot lost: ${login} in #${ctx.broadcasterName}`); },
+    (login) => {
+      queue.join(login);
+      console.log(`[readyup] Slot lost: ${login} in #${ctx.broadcasterName} — requeued`);
+    },
     (login) => { console.log(`[readyup] Ready: ${login} in #${ctx.broadcasterName}`); },
     ctx.say,
   );
