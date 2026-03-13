@@ -205,6 +205,37 @@ export default function App() {
         </div>
       </section>
 
+      {/* Made by */}
+      <section className="px-6 py-16 border-t border-border">
+        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div>
+            <div className="text-xs text-muted-foreground mb-1">// made by</div>
+            <a
+              href="https://twitch.tv/swisz"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-lg font-bold hover:text-muted-foreground transition-colors"
+            >
+              twitch.tv/swisz
+            </a>
+            <p className="text-xs text-muted-foreground mt-1">
+              CS streamer — come hang out
+            </p>
+          </div>
+          <div className="text-xs text-muted-foreground text-right">
+            <div>want the bot in your channel?</div>
+            <a
+              href="https://twitch.tv/swisz"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-foreground underline underline-offset-4"
+            >
+              ask swisz on Twitch
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="border-t border-border px-6 py-6">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
