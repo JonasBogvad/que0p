@@ -351,8 +351,16 @@
           }
         }
 
-        refresh();
-        setInterval(refresh, 3000);
+        async function boot() {
+          const meta = document.getElementById('queue-meta');
+          meta.textContent = '> connecting...';
+          await new Promise(r => setTimeout(r, 600));
+          meta.textContent = `> channel [${channel}]`;
+          await new Promise(r => setTimeout(r, 400));
+          refresh();
+          setInterval(refresh, 3000);
+        }
+        boot();
       }
 
       function escHtml(s) {

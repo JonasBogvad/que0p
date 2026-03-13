@@ -1,8 +1,45 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 const TWITCH_TEXT = 'Twitch';
+
+function TypedPrompt({ text }: { text: string }) {
+  const [displayed, setDisplayed] = useState('');
+  const ref = useRef<HTMLDivElement>(null);
+  const triggered = useRef(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !triggered.current) {
+          triggered.current = true;
+          let i = 0;
+          const interval = setInterval(() => {
+            i++;
+            setDisplayed(text.slice(0, i));
+            if (i >= text.length) clearInterval(interval);
+          }, 40);
+        }
+      },
+      { threshold: 0.5 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [text]);
+
+  return (
+    <div ref={ref} className="text-muted-foreground text-sm mb-10">
+      <span className="text-foreground">$</span>{' '}
+      {displayed}
+      {displayed.length < text.length && displayed.length > 0 && (
+        <span className="cursor-blink">|</span>
+      )}
+    </div>
+  );
+}
 
 function TwitchLogo({ visible }: { visible: boolean }) {
   return (
@@ -195,6 +232,7 @@ export default function App() {
           <h1 className="text-5xl sm:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
             <TypedTwitch /> queue bot<br />
             <span className="text-muted-foreground">for any game.</span>
+            <span className="cursor-blink text-muted-foreground"> _</span>
           </h1>
           <p className="text-muted-foreground mb-10 max-w-xl leading-relaxed">
             Fair draws, ready-up timers, activity checks. Keep the lobby moving — all from Twitch chat.
@@ -222,9 +260,7 @@ export default function App() {
       {/* Features */}
       <section className="px-6 py-20 border-t border-border">
         <div className="max-w-5xl mx-auto">
-          <div className="text-muted-foreground text-sm mb-10">
-            <span className="text-foreground">$</span> cat features.txt
-          </div>
+          <TypedPrompt text="cat features.txt" />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-px bg-border">
             {features.map((f) => (
               <div key={f.title} className="bg-background p-6">
@@ -245,9 +281,7 @@ export default function App() {
       {/* How it works */}
       <section className="px-6 py-20 border-t border-border">
         <div className="max-w-5xl mx-auto">
-          <div className="text-muted-foreground text-sm mb-10">
-            <span className="text-foreground">$</span> cat how-it-works.txt
-          </div>
+          <TypedPrompt text="cat how-it-works.txt" />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
             {steps.map((s) => (
               <div key={s.n}>
@@ -263,9 +297,7 @@ export default function App() {
       {/* Commands */}
       <section className="px-6 py-20 border-t border-border">
         <div className="max-w-5xl mx-auto">
-          <div className="text-muted-foreground text-sm mb-10">
-            <span className="text-foreground">$</span> que0p --list-commands
-          </div>
+          <TypedPrompt text="que0p --list-commands" />
           <div className="flex flex-col md:flex-row gap-6">
             <CommandTable commands={viewerCommands} label="viewers" />
             <CommandTable commands={modCommands} label="mods" />
@@ -277,9 +309,7 @@ export default function App() {
       {/* CTA */}
       <section className="px-6 py-24 border-t border-border">
         <div className="max-w-2xl mx-auto">
-          <div className="text-muted-foreground text-sm mb-6">
-            <span className="text-foreground">$</span> que0p --add-to-channel
-          </div>
+          <TypedPrompt text="que0p --add-to-channel" />
           <h2 className="text-4xl font-black mb-4 tracking-tight">Ready to run it?</h2>
           <p className="text-muted-foreground mb-8 text-sm">
             Authorize Que0p and it joins your channel instantly. No setup, no downloads.
