@@ -99,17 +99,6 @@ export default function App() {
           <span className="text-sm font-bold tracking-widest uppercase">
             <span className="text-muted-foreground">~/</span>que0p
           </span>
-          <span className="hidden sm:block text-xs text-muted-foreground">
-            whitelist only —{' '}
-            <a
-              href="https://twitch.tv/swisz"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-foreground underline underline-offset-4"
-            >
-              twitch.tv/swisz
-            </a>
-          </span>
           <a href="/add-channel">
             <Button size="sm">add-channel</Button>
           </a>
@@ -193,26 +182,26 @@ export default function App() {
             <span className="text-foreground">$</span> que0p --add-to-channel
           </div>
           <h2 className="text-4xl font-black mb-4 tracking-tight">Ready to run it?</h2>
-          <p className="text-muted-foreground mb-2 text-sm">
+          <p className="text-muted-foreground mb-8 text-sm">
             Authorize Que0p and it joins your channel instantly. No setup, no downloads.
-          </p>
-          <p className="text-sm text-muted-foreground mb-8">
-            Access is whitelisted —{' '}
-            <a
-              href="https://twitch.tv/swisz"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-foreground underline underline-offset-4"
-            >
-              ask swisz on Twitch
-            </a>{' '}
-            to get approved first.
           </p>
           <a href="/add-channel">
             <Button size="lg" className="text-sm tracking-wide">
               $ add-channel
             </Button>
           </a>
+          <p className="mt-4 text-xs text-muted-foreground">
+            whitelist only —{' '}
+            <a
+              href="https://twitch.tv/swisz"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-foreground underline underline-offset-4"
+            >
+              twitch.tv/swisz
+            </a>{' '}
+            to get approved
+          </p>
         </div>
       </section>
 
