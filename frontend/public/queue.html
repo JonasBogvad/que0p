@@ -168,6 +168,7 @@
         let prevPlayers = [];
         let prevOpen = null;
         let prevReadyupUser = null;
+        let prevLastEventLogin = null;
         let readyupStartTime = null;
         let countdownInterval = null;
         const logEntries = [];
@@ -249,6 +250,15 @@
 
             // Ready-up
             const banner = document.getElementById('readyup-banner');
+            // Log last readyup event if it changed
+            const evt = data.readyup.lastEvent;
+            if (evt?.login && evt.login !== prevLastEventLogin) {
+              if (evt.type === 'ready') addLog('ready', `${evt.login} is ready ⚡`);
+              else if (evt.type === 'lost') addLog('lost', `${evt.login} — slot lost ⏰`);
+              else if (evt.type === 'skip') addLog('close', `${evt.login} skipped 💨`);
+              prevLastEventLogin = evt.login;
+            }
+
             if (data.readyup.waiting) {
               banner.className = 'readyup-banner visible';
               document.getElementById('readyup-user').textContent = '@' + data.readyup.current + ' — waiting for !ready';

@@ -15,6 +15,7 @@ export interface ReadyupState {
   getPendingWinner(): string | null;
   getPendingList(): string[];
   isWaitingForReady(): boolean;
+  getLastEvent(): { type: 'ready' | 'lost' | 'skip' | null; login: string | null };
 }
 
 export function createReadyupState(): ReadyupState {
@@ -24,6 +25,7 @@ export function createReadyupState(): ReadyupState {
   let _onSlotLost: ((login: string) => void) | null = null;
   let _onReady: ((login: string) => void) | null = null;
   let _say: SayFn | null = null;
+  let _lastEvent: { type: 'ready' | 'lost' | 'skip' | null; login: string | null } = { type: null, login: null };
 
   function processNext(): void {
     if (_pendingList.length === 0 || _say === null) {
@@ -39,6 +41,7 @@ export function createReadyupState(): ReadyupState {
       if (timedOut === null || _say === null) return;
       _currentWinner = null;
       void _say(`⏰ @${timedOut} took too long. Slot lost!`);
+      _lastEvent = { type: 'lost', login: timedOut };
       if (_onSlotLost) _onSlotLost(timedOut);
       processNext();
     }, READY_TIMEOUT_MS);
@@ -61,6 +64,7 @@ export function createReadyupState(): ReadyupState {
       const winner = _currentWinner;
       _currentWinner = null;
       void say(`⚡ @${winner} is ready! GL HF — frag out!`);
+      _lastEvent = { type: 'ready', login: winner };
       if (_onReady) _onReady(winner);
       processNext();
       return true;
@@ -72,6 +76,7 @@ export function createReadyupState(): ReadyupState {
       const skipped = _currentWinner;
       _currentWinner = null;
       void say(`💨 @${skipped} passed. Moving on...`);
+      _lastEvent = { type: 'skip', login: skipped };
       if (_onSlotLost) _onSlotLost(skipped);
       processNext();
     },
@@ -88,6 +93,7 @@ export function createReadyupState(): ReadyupState {
     getPendingWinner() { return _currentWinner; },
     getPendingList() { return [..._pendingList]; },
     isWaitingForReady() { return _currentWinner !== null; },
+    getLastEvent() { return _lastEvent; },
   };
 
   return state;
