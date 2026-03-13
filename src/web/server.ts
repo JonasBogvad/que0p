@@ -11,6 +11,15 @@ import { initChannelState, getChannelState } from '../state/perChannel.js';
 export function startWebServer(): void {
   const app = express();
 
+  // Redirect old domain to new
+  app.use((req, res, next) => {
+    if (req.hostname === 'twitch-que.fly.dev') {
+      res.redirect(301, `https://que0p.stream${req.originalUrl}`);
+      return;
+    }
+    next();
+  });
+
   // Security headers
   app.use((_req, res, next) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
