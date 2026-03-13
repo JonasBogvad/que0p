@@ -130,7 +130,7 @@ export function startWebServer(): void {
 
       await channels.addActive(login);
       await initChannelState(login);
-      await joinChannel(login);
+      await joinChannel(login, true);
 
       console.log(`[web] /callback — bot joined ${login}`);
       res.redirect(`/success.html?channel=${encodeURIComponent(login)}`);

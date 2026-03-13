@@ -6,9 +6,15 @@ export function setBotInstance(bot: Bot): void {
   _bot = bot;
 }
 
-export async function joinChannel(channel: string): Promise<void> {
+export async function joinChannel(channel: string, firstJoin = false): Promise<void> {
   if (!_bot) throw new Error('Bot not initialized');
   await _bot.join(channel);
+  if (firstJoin) {
+    // Small delay to ensure the bot is ready to send messages
+    setTimeout(() => {
+      void _bot!.say(channel, '👋 que0p is here! Type !help to see commands. Don\'t forget to /mod que0p so I can manage the queue properly!');
+    }, 3000);
+  }
 }
 
 export function leaveChannel(channel: string): void {
