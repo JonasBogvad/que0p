@@ -11,6 +11,28 @@ import { initChannelState } from '../state/perChannel.js';
 export function startWebServer(): void {
   const app = express();
 
+  // Security headers
+  app.use((_req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+    res.setHeader(
+      'Content-Security-Policy',
+      [
+        "default-src 'self'",
+        "script-src 'self' 'unsafe-inline'",
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+        "font-src 'self' https://fonts.gstatic.com",
+        "connect-src 'self'",
+        "img-src 'self' data:",
+        "frame-ancestors 'none'",
+      ].join('; '),
+    );
+    next();
+  });
+
   // Serve the React landing page (built frontend)
   const frontendDist = join(__dirname, '../../frontend/dist');
   app.use(express.static(frontendDist));
