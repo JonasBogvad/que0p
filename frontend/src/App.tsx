@@ -107,7 +107,7 @@ const features = [
   {
     icon: '!!',
     title: 'Ready-Up System',
-    desc: '30 seconds to !ready or lose your slot. No AFK players holding up the lobby.',
+    desc: '30 seconds to !qready or lose your slot. No AFK players holding up the lobby.',
   },
   {
     icon: '?',
@@ -117,7 +117,7 @@ const features = [
   {
     icon: '[]',
     title: 'Lobby Tracker',
-    desc: 'Confirmed players build up a lobby list. Persists until !reset — always know who\'s in.',
+    desc: 'Confirmed players build up a lobby list. Persists until !qreset — always know who\'s in.',
   },
   {
     icon: '#',
@@ -147,29 +147,29 @@ const modCommands = [
   { cmd: '!qbanlist', desc: 'View banned players' },
   { cmd: '!qnext', desc: 'Move lobby back to queue, clear lobby' },
   { cmd: '!qreset', desc: 'Wipe queue + lobby, start fresh' },
-  { cmd: '!removechannel', desc: 'Remove bot from your channel' },
+  { cmd: '!qpart', desc: 'Remove bot from your channel' },
 ];
 
 const adminCommands = [
-  { cmd: '!allowchannel <user>', desc: 'Approve a channel' },
-  { cmd: '!approvedlist', desc: 'View approved channels' },
+  { cmd: '!qallow <user>', desc: 'Approve a channel' },
+  { cmd: '!qapproved', desc: 'View approved channels' },
 ];
 
 const steps = [
   {
     n: '01',
     title: 'Open the queue',
-    desc: 'Type !open seq for first-come first-served, or !open ran for random draw.',
+    desc: 'Type !qopen seq for first-come first-served, or !qopen ran for random draw.',
   },
   {
     n: '02',
     title: 'Viewers join',
-    desc: 'Viewers type !join to enter. They can check their spot with !pos anytime.',
+    desc: 'Viewers type !qjoin to enter. They can check their spot with !qpos anytime.',
   },
   {
     n: '03',
     title: 'Draw & play',
-    desc: 'Type !draw to pick players. They !ready up to join the lobby. Use !reset to wipe and start fresh.',
+    desc: 'Type !qdraw to pick players. They !qready up to join the lobby. Use !qreset to wipe and start fresh.',
   },
   {
     n: '04',

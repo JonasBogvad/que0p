@@ -12,7 +12,7 @@ export async function joinChannel(channel: string, firstJoin = false): Promise<v
   if (firstJoin) {
     // Small delay to ensure the bot is ready to send messages
     setTimeout(() => {
-      void _bot!.say(channel, '> que0p connected — type !help for commands');
+      void _bot!.say(channel, '> que0p connected — type !qhelp for commands');
     }, 3000);
   }
 }

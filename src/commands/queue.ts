@@ -15,11 +15,11 @@ export const queueCommand = createBotCommand('qlist', async (_params, ctx) => {
     'Closed';
 
   if (list.length === 0) {
-    await ctx.say(`📋 Queue [${statusStr}] is empty.`);
+    await ctx.say(`> queue [${statusStr}] is empty`);
     return;
   }
 
-  const prefix = `📋 Queue [${statusStr}] (${list.length}): `;
+  const prefix = `> queue [${statusStr}] (${list.length}): `;
   const names = list.map((u, i) => `${i + 1}. ${u}`).join(', ');
   let message = prefix + names;
   if (message.length > MAX_LENGTH) {

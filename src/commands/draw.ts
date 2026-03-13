@@ -17,13 +17,13 @@ export const drawCommand = createBotCommand('qdraw', async (params, ctx) => {
   const { queue, activity, readyup } = getChannelState(ctx.broadcasterName);
 
   if (readyup.isWaitingForReady()) {
-    await ctx.say(`💣 Still waiting for @${readyup.getPendingWinner()} to ready up!`);
+    await ctx.say(`> still waiting for @${readyup.getPendingWinner()} to !qready`);
     return;
   }
 
   const mode = queue.getMode();
   if (!mode) {
-    await ctx.say('❌ Queue is not open. Use !open seq or !open ran first.');
+    await ctx.say('> queue is not open — use !qopen seq or !qopen ran');
     return;
   }
 
@@ -39,13 +39,13 @@ export const drawCommand = createBotCommand('qdraw', async (params, ctx) => {
   }
 
   if (winners.length === 0) {
-    await ctx.say('💤 No active players in the queue. (Must have chatted in the last 10 min)');
+    await ctx.say('> no active players in queue — must have chatted in the last 10 min');
     return;
   }
 
   if (winners.length < n) {
     await ctx.say(
-      `⚔️ Only ${winners.length} eligible player${winners.length === 1 ? '' : 's'} found. Drawing ${winners.length}.`,
+      `> only ${winners.length} eligible player${winners.length === 1 ? '' : 's'} found — drawing ${winners.length}`,
     );
   }
 

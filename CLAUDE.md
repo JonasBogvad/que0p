@@ -101,9 +101,9 @@ src/
     remove.ts           — !qremove <user> (mod+)
     ban.ts              — !qban <user>, !qunban <user>, !qbanlist (mod+)
     help.ts             — !qhelp
-    allowchannel.ts     — !allowchannel (owner channel only)
-    removechannel.ts    — !removechannel (any channel, mod+)
-    approvedlist.ts     — !approvedlist (owner channel only)
+    allowchannel.ts     — !qallow (owner channel only)
+    removechannel.ts    — !qpart (any channel, mod+)
+    approvedlist.ts     — !qapproved (owner channel only)
 
   util/
     helixSay.ts         — sends messages via Twitch Helix API (gets bot badge)
@@ -166,7 +166,7 @@ Every active channel has isolated state created by `getChannelState(channel)`:
 - **readyup** — state machine for the draw/ready-up cycle; tracks current winner, pending list, drawn batch, last event (ready/lost/skip)
 - **activity** — records last chat message time per user; used to filter AFK players on draw (10min window)
 - **cooldown** — prevents users from spamming commands
-- **lobby** — in-memory list of confirmed (readied) players; only cleared on `!reset` or `!nextround`
+- **lobby** — in-memory list of confirmed (readied) players; only cleared on `!qreset` or `!qnext`
 
 ---
 
@@ -340,7 +340,7 @@ Old domain `twitch-que.fly.dev` 301-redirects to `que0p.stream` via middleware i
 
 1. Create `src/commands/yourcommand.ts` — export `yourCommand = createBotCommand('qname', handler)` (all commands use `q` prefix)
 2. Import and register in `src/index.ts` commands array
-3. Add to `!help` message in `src/commands/help.ts`
+3. Add to `!qhelp` message in `src/commands/help.ts`
 4. Add to mod or viewer commands table in `frontend/src/App.tsx`
 5. Add FAQ entry if behaviour is non-obvious
 
@@ -349,10 +349,10 @@ Old domain `twitch-que.fly.dev` 301-redirects to `que0p.stream` via middleware i
 ## Key design decisions
 
 - **Players requeued on skip/timeout** — drawn players are removed from queue on draw; if they skip or time out they are put back at the end automatically
-- **Lobby only clears on !reset or !nextround** — persists across multiple draw rounds so streamer always knows who's confirmed
+- **Lobby only clears on !qreset or !qnext** — persists across multiple draw rounds so streamer always knows who's confirmed
 - **Activity check on draw** — players who haven't chatted in 10min are skipped silently (stay in queue)
-- **!stop vs !reset** — stop closes queue but preserves everything; reset wipes everything
-- **!nextround** — moves lobby players to end of queue, clears lobby; for between-game transitions
+- **!qstop vs !qreset** — stop closes queue but preserves everything; reset wipes everything
+- **!qnext** — moves lobby players to end of queue, clears lobby; for between-game transitions
 - **Sequential draw removes in order** — first joined = first drawn; random picks uniformly
 - **Rate limit 1200ms** — prevents Twitch rate limit errors during large draw batches
 - **Helix API for messages** — gives the bot its verified badge in chat
