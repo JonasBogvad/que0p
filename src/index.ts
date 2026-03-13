@@ -6,6 +6,7 @@ import * as channels from './state/channels.js';
 import { initChannelState, getAllChannelStates } from './state/perChannel.js';
 import { setBotInstance } from './botActions.js';
 import { createRateLimitedSay } from './util/rateLimiter.js';
+import { createHelixSay } from './util/helixSay.js';
 import { startWebServer } from './web/server.js';
 import { joinCommand } from './commands/join.js';
 import { leaveCommand } from './commands/leave.js';
@@ -68,8 +69,11 @@ async function main() {
     ],
   });
 
-  // Patch bot.say with a rate limiter (1.1s minimum gap).
-  (bot as unknown as { say: typeof bot.say }).say = createRateLimitedSay(bot.say.bind(bot));
+  // Patch bot.say to send via Helix API (gets the bot badge) with a rate limiter.
+  const helixSay = createHelixSay(authProvider);
+  (bot as unknown as { say: typeof bot.say }).say = createRateLimitedSay(
+    (channel: string, text: string) => helixSay(channel, text),
+  ) as typeof bot.say;
 
   setBotInstance(bot);
 

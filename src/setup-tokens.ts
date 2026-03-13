@@ -18,7 +18,7 @@ import { exec } from 'child_process';
 const PORT = 3000;
 const REDIRECT_URI = `http://localhost:${PORT}/callback`;
 
-const BOT_SCOPES = 'chat:read chat:edit user:bot';
+const BOT_SCOPES = 'chat:read user:bot user:write:chat';
 const BROADCASTER_SCOPES = 'channel:bot';
 
 const clientId = process.env.TWITCH_CLIENT_ID;
