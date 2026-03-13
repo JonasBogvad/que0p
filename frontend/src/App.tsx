@@ -204,7 +204,7 @@ function CommandTable({
 }
 
 function useStats() {
-  const [stats, setStats] = useState<{ queuesStarted: number; playersConfirmed: number; channelsAllTime: number } | null>(null);
+  const [stats, setStats] = useState<{ queuesStarted: number; playersJoined: number; channelsAllTime: number } | null>(null);
   useEffect(() => {
     fetch('/api/stats')
       .then(r => r.json())
@@ -269,7 +269,7 @@ export default function App() {
             <p className="mt-6 text-xs text-muted-foreground font-mono">
               <span className="text-foreground">{stats.channelsAllTime}</span> channels &nbsp;·&nbsp;{' '}
               <span className="text-foreground">{stats.queuesStarted}</span> queues run &nbsp;·&nbsp;{' '}
-              <span className="text-foreground">{stats.playersConfirmed}</span> players confirmed
+              <span className="text-foreground">{stats.playersJoined}</span> players joined
             </p>
           )}
         </div>

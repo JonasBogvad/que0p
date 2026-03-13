@@ -1,5 +1,6 @@
 import { createBotCommand } from '@twurple/easy-bot';
 import { getChannelState } from '../state/perChannel.js';
+import { incrementPlayersJoined } from '../state/stats.js';
 
 const COOLDOWN_MS = 3000;
 
@@ -18,6 +19,7 @@ export const joinCommand = createBotCommand('qjoin', async (_params, ctx) => {
   if (position === null) {
     await ctx.say(`> @${ctx.userName} already in queue`);
   } else {
+    void incrementPlayersJoined();
     await ctx.say(`> @${ctx.userName} joined [#${position} of ${queue.size()}]`);
   }
 });

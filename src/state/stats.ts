@@ -3,13 +3,13 @@ import { STATS_FILE } from '../paths.js';
 
 interface Stats {
   queuesStarted: number;
-  playersConfirmed: number;
+  playersJoined: number;
   channelsAllTime: number;
 }
 
 let _stats: Stats = {
   queuesStarted: 0,
-  playersConfirmed: 0,
+  playersJoined: 0,
   channelsAllTime: 0,
 };
 
@@ -35,8 +35,8 @@ export async function incrementQueuesStarted(): Promise<void> {
   await persist();
 }
 
-export async function incrementPlayersConfirmed(): Promise<void> {
-  _stats.playersConfirmed++;
+export async function incrementPlayersJoined(): Promise<void> {
+  _stats.playersJoined++;
   await persist();
 }
 
