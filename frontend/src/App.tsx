@@ -141,6 +141,7 @@ const modCommands = [
   { cmd: '!stop', desc: 'Close the queue' },
   { cmd: '!draw [1-5]', desc: 'Draw players' },
   { cmd: '!queue', desc: 'View the queue' },
+  { cmd: '!remove <user>', desc: 'Remove a player from the queue' },
   { cmd: '!nextround', desc: 'Move lobby back to queue, clear lobby' },
   { cmd: '!reset', desc: 'Wipe queue + lobby, start fresh' },
   { cmd: '!removechannel', desc: 'Remove bot from your channel' },

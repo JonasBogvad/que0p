@@ -100,6 +100,7 @@ src/
     queue.ts            — !queue
     help.ts             — !help
     allowchannel.ts     — !allowchannel (owner channel only)
+    remove.ts           — !remove <user> (mod+, removes player from queue)
     removechannel.ts    — !removechannel (any channel, mod+)
     approvedlist.ts     — !approvedlist (owner channel only)
 
