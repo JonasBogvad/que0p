@@ -78,6 +78,11 @@ const features = [
     desc: 'Only active chatters get drawn. Been quiet for 10 minutes? You get skipped.',
   },
   {
+    icon: '[]',
+    title: 'Lobby Tracker',
+    desc: 'Confirmed players build up a lobby list. Persists until !reset — always know who\'s in.',
+  },
+  {
     icon: '#',
     title: 'Multi-Channel',
     desc: 'Works across multiple streams at once. Each channel has its own isolated queue.',
@@ -99,7 +104,7 @@ const modCommands = [
   { cmd: '!stop', desc: 'Close the queue' },
   { cmd: '!draw [1-5]', desc: 'Draw players' },
   { cmd: '!queue', desc: 'View the queue' },
-  { cmd: '!reset', desc: 'Reset everything' },
+  { cmd: '!reset', desc: 'Wipe queue + lobby, start fresh' },
 ];
 
 const adminCommands = [
@@ -122,7 +127,7 @@ const steps = [
   {
     n: '03',
     title: 'Draw & play',
-    desc: 'Type !draw to pick a player. They get 30 seconds to !ready up or lose the slot.',
+    desc: 'Type !draw to pick players. They !ready up to join the lobby. Use !reset to wipe and start fresh.',
   },
   {
     n: '04',
@@ -218,7 +223,7 @@ export default function App() {
           <div className="text-muted-foreground text-sm mb-10">
             <span className="text-foreground">$</span> cat features.txt
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-border">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-px bg-border">
             {features.map((f) => (
               <div key={f.title} className="bg-background p-6">
                 <div className="text-xl font-black mb-4 text-muted-foreground">{f.icon}</div>
