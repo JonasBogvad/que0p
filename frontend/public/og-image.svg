@@ -1,22 +1,27 @@
 <svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
   <rect width="1200" height="630" fill="#000000"/>
-  <rect x="1" y="1" width="1198" height="628" fill="none" stroke="#222222" stroke-width="2"/>
+  <rect x="1" y="1" width="1198" height="628" fill="none" stroke="#1a1a1a" stroke-width="2"/>
 
-  <!-- prompt line -->
-  <text x="60" y="210" font-family="'JetBrains Mono','Courier New',monospace" font-size="26" fill="#555555">$ ./que0p --help</text>
+  <!-- Twitch logo — right side watermark -->
+  <g transform="translate(810, 165) scale(8.75)" fill="#9146FF" opacity="0.20">
+    <path d="M2.149 0L.537 4.119v16.836h5.731v3.045h3.224l3.045-3.045h4.657l6.269-6.269V0H2.149zm19.164 13.612l-3.582 3.582h-5.731l-3.045 3.045v-3.045H4.119V1.714h17.194v11.898zm-3.582-7.343v6.262h-2.149V6.269h2.149zm-5.731 0v6.262h-2.149V6.269h2.149z"/>
+  </g>
 
-  <!-- main title -->
-  <text x="60" y="320" font-family="'JetBrains Mono','Courier New',monospace" font-size="96" font-weight="800" fill="#ffffff">que0p</text>
+  <!-- prompt -->
+  <text x="80" y="200" font-family="'JetBrains Mono','Courier New',monospace" font-size="24" fill="#333333">$ ./que0p --help</text>
+
+  <!-- que0p — muted green -->
+  <text x="80" y="330" font-family="'JetBrains Mono','Courier New',monospace" font-size="112" font-weight="800" fill="#4ade80">que0p</text>
 
   <!-- subtitle -->
-  <text x="60" y="395" font-family="'JetBrains Mono','Courier New',monospace" font-size="34" fill="#888888">Twitch queue bot for any game.</text>
+  <text x="80" y="400" font-family="'JetBrains Mono','Courier New',monospace" font-size="30" fill="#666666">queue bot for any game.</text>
 
   <!-- divider -->
-  <line x1="60" y1="440" x2="1140" y2="440" stroke="#222222" stroke-width="1"/>
+  <line x1="80" y1="448" x2="1120" y2="448" stroke="#1a1a1a" stroke-width="1"/>
 
   <!-- features -->
-  <text x="60" y="490" font-family="'JetBrains Mono','Courier New',monospace" font-size="20" fill="#444444">fair draws  ·  ready-up timers  ·  activity checks  ·  multi-channel</text>
+  <text x="80" y="496" font-family="'JetBrains Mono','Courier New',monospace" font-size="19" fill="#333333">fair draws  ·  ready-up timers  ·  activity checks  ·  multi-channel</text>
 
   <!-- url -->
-  <text x="1140" y="590" font-family="'JetBrains Mono','Courier New',monospace" font-size="20" fill="#333333" text-anchor="end">twitch-que.fly.dev</text>
+  <text x="1120" y="590" font-family="'JetBrains Mono','Courier New',monospace" font-size="18" fill="#2a2a2a" text-anchor="end">twitch-que.fly.dev</text>
 </svg>
