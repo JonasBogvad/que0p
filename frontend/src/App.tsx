@@ -124,6 +124,11 @@ const steps = [
     title: 'Draw & play',
     desc: 'Type !draw to pick a player. They get 30 seconds to !ready up or lose the slot.',
   },
+  {
+    n: '04',
+    title: 'Watch live',
+    desc: 'Share /queue.html?channel=you so viewers can watch the queue update in real time.',
+  },
 ];
 
 function CommandTable({
