@@ -20,6 +20,7 @@ import { skipCommand } from './commands/skip.js';
 import { resetCommand } from './commands/reset.js';
 import { helpCommand } from './commands/help.js';
 import { allowChannelCommand } from './commands/allowchannel.js';
+import { approvedListCommand } from './commands/approvedlist.js';
 import { removeChannelCommand } from './commands/removechannel.js';
 
 async function loadAuth() {
@@ -65,6 +66,7 @@ async function main() {
       resetCommand,
       helpCommand,
       allowChannelCommand,
+      approvedListCommand,
       removeChannelCommand,
     ],
   });

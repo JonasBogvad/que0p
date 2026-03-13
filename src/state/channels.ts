@@ -39,6 +39,10 @@ export function isApproved(channel: string): boolean {
   return _approved.has(channel.toLowerCase());
 }
 
+export function getApproved(): string[] {
+  return [..._approved];
+}
+
 export async function approve(channel: string): Promise<void> {
   _approved.add(channel.toLowerCase());
   await persistApproved();
