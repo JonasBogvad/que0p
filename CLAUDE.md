@@ -85,6 +85,7 @@ src/
     readyup.ts          — ready-up state machine (draw batch, timer, events)
     activity.ts         — tracks last chat message time per user (10min window)
     cooldown.ts         — per-user per-command cooldown tracker
+    stats.ts            — persistent global counters (queuesStarted, playersJoined, channelsAllTime)
 
   commands/
     join.ts             — !qjoin
@@ -153,6 +154,7 @@ Set on Fly.io with `fly secrets set KEY=value`.
 | `channels.json` | List of active channel logins |
 | `approved.json` | List of approved channel logins (whitelist) |
 | `queue-{channel}.json` | Persisted queue for each channel |
+| `stats.json` | Global counters: queuesStarted, playersJoined, channelsAllTime |
 
 In development, data files are written to the project root (`.`).
 
@@ -217,6 +219,7 @@ Runs on port 8080. Key routes:
 | `GET /` | Serves React landing page (built frontend) |
 | `GET /api/channels` | Lists active channels with queue size and open status |
 | `GET /api/queue/:channel` | Full queue state: players, lobby, readyup, mode |
+| `GET /api/stats` | Global stats: queuesStarted, playersJoined, channelsAllTime |
 | `GET /health` | Health check (`{ status: 'ok', uptime }`) |
 | `GET /add-channel` | Redirects to Twitch OAuth authorization |
 | `GET /callback` | OAuth callback: exchanges code, resolves login, joins channel |
@@ -240,6 +243,7 @@ Key components in `App.tsx`:
 - `TypedTwitch` — Twitch logo fades in, then "Twitch" types out character by character
 - `TypedPrompt` — section prompts type out when scrolled into view (IntersectionObserver, fires once)
 - Blinking `_` cursor after hero tagline
+- `useStats` hook — fetches `/api/stats` on mount, displays live counters in hero (channels · queues run · players joined)
 
 Build: `cd frontend && npm run build`
 
@@ -328,9 +332,11 @@ curl https://que0p.stream/health
 - Region: `ord` (Chicago)
 - Machine: 256mb RAM, shared CPU
 
-DNS is on Cloudflare (proxy OFF — DNS only, grey cloud):
+DNS is on Cloudflare (proxy ON — orange cloud):
 - `A    que0p.stream → 66.241.125.53`
 - `AAAA que0p.stream → 2a09:8280:1::e2:5889:0`
+- SSL mode: **Full (Strict)**
+- TLS cert on Fly is a Cloudflare Origin Certificate (15yr), imported via `fly certs import que0p.stream --fullchain cert.pem --private-key key.pem`
 
 Old domain `twitch-que.fly.dev` 301-redirects to `que0p.stream` via middleware in `src/web/server.ts`.
 
