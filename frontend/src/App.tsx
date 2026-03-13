@@ -41,9 +41,9 @@ function TypedTwitch() {
         i++;
         setTyped(TWITCH_TEXT.slice(0, i));
         if (i >= TWITCH_TEXT.length) clearInterval(interval);
-      }, 80);
+      }, 150);
       return () => clearInterval(interval);
-    }, 900);
+    }, 1400);
     return () => {
       clearTimeout(logoTimer);
       clearTimeout(typeTimer);
