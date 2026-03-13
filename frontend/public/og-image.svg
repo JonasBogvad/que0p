@@ -1,0 +1,22 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#000000"/>
+  <rect x="1" y="1" width="1198" height="628" fill="none" stroke="#222222" stroke-width="2"/>
+
+  <!-- prompt line -->
+  <text x="60" y="210" font-family="'JetBrains Mono','Courier New',monospace" font-size="26" fill="#555555">$ ./que0p --help</text>
+
+  <!-- main title -->
+  <text x="60" y="320" font-family="'JetBrains Mono','Courier New',monospace" font-size="96" font-weight="800" fill="#ffffff">que0p</text>
+
+  <!-- subtitle -->
+  <text x="60" y="395" font-family="'JetBrains Mono','Courier New',monospace" font-size="34" fill="#888888">Twitch queue bot for any game.</text>
+
+  <!-- divider -->
+  <line x1="60" y1="440" x2="1140" y2="440" stroke="#222222" stroke-width="1"/>
+
+  <!-- features -->
+  <text x="60" y="490" font-family="'JetBrains Mono','Courier New',monospace" font-size="20" fill="#444444">fair draws  ·  ready-up timers  ·  activity checks  ·  multi-channel</text>
+
+  <!-- url -->
+  <text x="1140" y="590" font-family="'JetBrains Mono','Courier New',monospace" font-size="20" fill="#333333" text-anchor="end">twitch-que.fly.dev</text>
+</svg>
