@@ -18,6 +18,7 @@ import { stopCommand } from './commands/stop.js';
 import { readyCommand } from './commands/ready.js';
 import { skipCommand } from './commands/skip.js';
 import { resetCommand } from './commands/reset.js';
+import { nextroundCommand } from './commands/nextround.js';
 import { helpCommand } from './commands/help.js';
 import { allowChannelCommand } from './commands/allowchannel.js';
 import { approvedListCommand } from './commands/approvedlist.js';
@@ -64,6 +65,7 @@ async function main() {
       readyCommand,
       skipCommand,
       resetCommand,
+      nextroundCommand,
       helpCommand,
       allowChannelCommand,
       approvedListCommand,

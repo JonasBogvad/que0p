@@ -172,7 +172,18 @@
           </button>
           <div class="faq-a">
             <p>The lobby shows players who have confirmed their slot with <code>!ready</code>. It persists across multiple <code>!draw</code> rounds so you always know who is already in.</p>
-            <p>The lobby only clears when a mod types <code>!reset</code>.</p>
+            <p>The lobby clears on <code>!nextround</code> (players moved back to queue) or <code>!reset</code> (everything wiped).</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">
+            <span><span class="faq-q-prefix">Q.</span> How do I start a new round after a game?</span>
+            <span class="faq-chevron">▶</span>
+          </button>
+          <div class="faq-a">
+            <p><code>!nextround</code> — moves everyone in the lobby back to the end of the queue and clears the lobby. Players who were waiting in queue the whole time stay at the front. Fair for everyone.</p>
+            <p>Use <code>!reset</code> instead if you want a completely fresh start with no one in queue.</p>
           </div>
         </div>
 
