@@ -21,8 +21,12 @@ primary_region = 'ord'
   min_machines_running = 1
 
   [[services.ports]]
-    port = 8080
+    port = 80
     handlers = ['http']
+
+  [[services.ports]]
+    port = 443
+    handlers = ['tls', 'http']
 
   [[services.http_checks]]
     interval = '30s'
