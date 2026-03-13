@@ -6,50 +6,82 @@
     <title>que0p — joined</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet" />
     <style>
       *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
       body {
         background: #000;
         color: #fff;
         font-family: 'JetBrains Mono', 'Courier New', monospace;
         min-height: 100vh;
+      }
+
+      /* Nav — matches landing */
+      nav {
+        border-bottom: 1px solid #262626;
+        padding: 1rem 1.5rem;
+        position: sticky;
+        top: 0;
+        background: #000;
+        z-index: 10;
+      }
+      nav .inner {
+        max-width: 64rem;
+        margin: 0 auto;
         display: flex;
         align-items: center;
-        justify-content: center;
-        padding: 2rem;
+        justify-content: space-between;
       }
-      .card {
-        border: 1px solid #222;
-        padding: 3rem;
-        max-width: 540px;
-        width: 100%;
+      nav .brand { font-size: 0.875rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+      nav .brand span { color: #666; }
+      nav a.btn {
+        font-family: inherit;
+        font-size: 0.75rem;
+        font-weight: 700;
+        background: #fff;
+        color: #000;
+        border: none;
+        padding: 0.4rem 0.85rem;
+        cursor: pointer;
+        text-decoration: none;
+        letter-spacing: 0.03em;
       }
-      .prompt { color: #555; font-size: 0.8rem; margin-bottom: 2rem; }
-      .prompt span { color: #4ade80; }
-      h1 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.75rem; }
+      nav a.btn:hover { background: #e5e5e5; }
+
+      /* Page */
+      main {
+        max-width: 36rem;
+        margin: 0 auto;
+        padding: 6rem 1.5rem 4rem;
+      }
+      .prompt { color: #555; font-size: 0.8rem; margin-bottom: 2.5rem; }
+      .prompt .dollar { color: #4ade80; }
+      h1 { font-size: 1.75rem; font-weight: 800; margin-bottom: 0; }
       .channel { color: #4ade80; }
-      p { color: #666; font-size: 0.85rem; line-height: 1.6; margin-bottom: 0.5rem; }
       .divider { border: none; border-top: 1px solid #1a1a1a; margin: 2rem 0; }
-      a {
-        color: #fff;
-        font-size: 0.8rem;
-        text-decoration: underline;
-        text-underline-offset: 4px;
-      }
-      a:hover { color: #888; }
+      p { color: #666; font-size: 0.85rem; line-height: 1.7; }
+      p strong { color: #fff; }
+      .back { color: #fff; font-size: 0.8rem; text-decoration: underline; text-underline-offset: 4px; }
+      .back:hover { color: #666; }
     </style>
   </head>
   <body>
-    <div class="card">
-      <div class="prompt"><span>$</span> que0p --join-channel</div>
+    <nav>
+      <div class="inner">
+        <span class="brand"><span>~/</span>que0p</span>
+        <a href="/add-channel" class="btn">add-channel</a>
+      </div>
+    </nav>
+    <main>
+      <div class="prompt"><span class="dollar">$</span> que0p --join-channel</div>
       <h1>✓ bot joined <span class="channel" id="channel"></span></h1>
       <hr class="divider" />
-      <p>Type <strong style="color:#fff">!help</strong> in your chat to see all commands.</p>
-      <p>The bot is live and ready to manage your queue.</p>
+      <p>Type <strong>!help</strong> in your chat to see all commands.</p>
+      <p style="margin-top:0.5rem">The bot is live and ready to manage your queue.</p>
       <hr class="divider" />
-      <a href="/">← back to que0p</a>
-    </div>
+      <a href="/" class="back">← back to que0p</a>
+    </main>
     <script>
       const params = new URLSearchParams(window.location.search);
       const ch = params.get('channel');
