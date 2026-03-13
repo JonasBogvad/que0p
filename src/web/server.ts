@@ -77,6 +77,8 @@ export function startWebServer(): void {
       });
 
       if (!tokenRes.ok) {
+        const body = await tokenRes.text();
+        console.error(`[web] /callback token exchange failed: ${tokenRes.status} — ${body}`);
         res.redirect('/error.html?reason=Failed+to+exchange+authorization+code.');
         return;
       }
