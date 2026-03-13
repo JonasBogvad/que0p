@@ -102,6 +102,12 @@ const modCommands = [
   { cmd: '!reset', desc: 'Reset everything' },
 ];
 
+const adminCommands = [
+  { cmd: '!allowchannel <user>', desc: 'Approve a channel' },
+  { cmd: '!removechannel', desc: 'Remove bot from channel' },
+  { cmd: '!approvedlist', desc: 'View approved channels' },
+];
+
 const steps = [
   {
     n: '01',
@@ -243,6 +249,7 @@ export default function App() {
           <div className="flex flex-col md:flex-row gap-6">
             <CommandTable commands={viewerCommands} label="viewers" />
             <CommandTable commands={modCommands} label="mods" />
+            <CommandTable commands={adminCommands} label="admin (owner only)" />
           </div>
         </div>
       </section>
