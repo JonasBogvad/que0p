@@ -27,9 +27,50 @@ Live at: **https://que0p.stream**
 
 ---
 
+## Architecture overview
+
+```
+Twitch chat
+    ↕ IRC (twurple)
+Bot process (src/index.ts)
+    ├── Commands → per-channel state (queue, readyup, lobby, activity, cooldown)
+    ├── helixSay → Twitch Helix API (bot badge messages, rate limited)
+    └── Express web server (:8080)
+            ├── GET /api/*          → reads per-channel state
+            ├── GET /add-channel    → Twitch OAuth redirect
+            ├── GET /callback       → OAuth exchange → joins channel
+            └── Static files        → frontend/dist/ + frontend/public/
+
+Browser (viewers/streamer)
+    ├── que0p.stream/               → React landing page (Vite build)
+    ├── que0p.stream/queue.html     → polls /api/queue/:channel every 3s
+    ├── que0p.stream/channels.html  → polls /api/channels
+    └── que0p.stream/faq.html       → static accordion
+
+Fly.io
+    ├── Machine (ord region, 256mb)
+    ├── Volume bot_data → /data     → tokens.json, channels.json, approved.json, queue-*.json
+    └── TLS cert (Let's Encrypt via fly certs)
+
+DNS (Cloudflare)
+    ├── A    que0p.stream → 66.241.125.53
+    └── AAAA que0p.stream → 2a09:8280:1::e2:5889:0
+```
+
+---
+
 ## Repository structure
 
 ```
+/                           — project root
+  CLAUDE.md                 — this file
+  package.json              — backend deps + scripts (build, start, setup)
+  tsconfig.json             — TypeScript config
+  Dockerfile                — production image
+  fly.toml                  — Fly.io app config
+  .github/workflows/        — CI/CD (fly deploy on push to master)
+  .husky/pre-commit         — runs npm run build before every commit
+
 src/
   index.ts              — entry point, wires bot + web server
   config.ts             — env var validation
@@ -236,27 +277,60 @@ To set up tokens locally: `npm run setup` (runs `src/setup-tokens.ts`).
 
 ## Deployment
 
+GitHub Actions deploys automatically on every push to `master`. To deploy manually or manage the app:
+
 ```bash
-# Deploy manually
+# Deploy
 fly deploy
 
-# Set a secret
-fly secrets set KEY=value
+# App status and machine state
+fly status
 
-# View logs
+# Live logs
 fly logs
 
-# Check cert
+# SSH into the running machine
+fly ssh console
+
+# List / set / delete secrets (env vars)
+fly secrets list
+fly secrets set KEY=value
+fly secrets unset KEY
+
+# Persistent volume
+fly volumes list
+fly volumes show bot_data
+
+# Scaling
+fly scale count 1        # ensure exactly 1 machine running
+fly scale memory 256     # set memory in MB
+
+# Custom domain / TLS
+fly certs add que0p.stream
 fly certs check que0p.stream
+fly certs list
+
+# IP addresses
+fly ips list
+fly ips allocate-v6      # needed for custom domain cert verification
+
+# Health check
+curl https://que0p.stream/health
 ```
 
-GitHub Actions workflow (`.github/workflows/`) deploys on every push to `master`.
-
 `fly.toml` notes:
-- `APP_URL` in `[env]` is stale — real value is set via `fly secrets set APP_URL=https://que0p.stream`
+- `APP_URL` in `[env]` is stale — the real value is set via `fly secrets set APP_URL=https://que0p.stream`
 - Volume `bot_data` → `/data` for persistent state
 - Health check on `/health` with 20s grace period
-- `auto_stop_machines = false` — bot must stay running
+- `auto_stop_machines = false` — bot must stay running at all times
+- Region: `ord` (Chicago)
+- Machine: 256mb RAM, shared CPU
+
+DNS is on Cloudflare (proxy OFF — DNS only, grey cloud):
+- `A    que0p.stream → 66.241.125.53`
+- `AAAA que0p.stream → 2a09:8280:1::e2:5889:0`
+
+Old domain `twitch-que.fly.dev` 301-redirects to `que0p.stream` via middleware in `src/web/server.ts`.
 
 ---
 
