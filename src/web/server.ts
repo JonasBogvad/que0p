@@ -37,6 +37,26 @@ export function startWebServer(): void {
   const frontendDist = join(__dirname, '../../frontend/dist');
   app.use(express.static(frontendDist));
 
+  app.get('/api/queue/:channel', (req, res) => {
+    const channel = req.params['channel']?.toLowerCase();
+    if (!channel || !channels.getActive().includes(channel)) {
+      res.status(404).json({ error: 'Channel not found' });
+      return;
+    }
+    const { queue, readyup } = getChannelState(channel);
+    res.json({
+      open: queue.isQueueOpen(),
+      mode: queue.getMode(),
+      players: queue.list(),
+      size: queue.size(),
+      readyup: {
+        waiting: readyup.isWaitingForReady(),
+        current: readyup.getPendingWinner(),
+        pending: readyup.getPendingList(),
+      },
+    });
+  });
+
   app.get('/health', (_req, res) => {
     res.json({ status: 'ok', uptime: process.uptime() });
   });

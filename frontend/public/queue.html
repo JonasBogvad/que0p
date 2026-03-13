@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>que0p — queue</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        background: #000;
+        color: #fff;
+        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        min-height: 100vh;
+      }
+
+      nav {
+        border-bottom: 1px solid #1a1a1a;
+        padding: 1rem 1.5rem;
+        position: sticky;
+        top: 0;
+        background: #000;
+        z-index: 10;
+      }
+      nav .inner {
+        max-width: 64rem;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      nav .brand { font-size: 0.875rem; font-weight: 700; letter-spacing: 0.1em; }
+      nav .brand .dim { color: #666; }
+      nav .status { font-size: 0.75rem; color: #444; }
+      nav .status.live { color: #4ade80; }
+
+      main {
+        max-width: 48rem;
+        margin: 0 auto;
+        padding: 4rem 1.5rem;
+      }
+
+      .prompt { color: #555; font-size: 0.8rem; margin-bottom: 2.5rem; }
+      .prompt .dollar { color: #4ade80; }
+
+      .header {
+        display: flex;
+        align-items: baseline;
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+      }
+      h1 { font-size: 1.75rem; font-weight: 800; }
+      .badge {
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 0.2rem 0.5rem;
+        border: 1px solid #333;
+        color: #555;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .badge.open { border-color: #4ade80; color: #4ade80; }
+      .badge.closed { border-color: #333; color: #555; }
+
+      .meta { color: #555; font-size: 0.75rem; margin-bottom: 2.5rem; }
+
+      .divider { border: none; border-top: 1px solid #1a1a1a; margin: 2rem 0; }
+
+      /* Readyup banner */
+      .readyup-banner {
+        border: 1px solid #4ade80;
+        padding: 1rem 1.25rem;
+        margin-bottom: 2rem;
+        display: none;
+      }
+      .readyup-banner.visible { display: block; }
+      .readyup-banner .label { font-size: 0.7rem; color: #4ade80; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+      .readyup-banner .user { font-size: 1rem; font-weight: 700; }
+      .readyup-banner .pending { font-size: 0.75rem; color: #555; margin-top: 0.25rem; }
+
+      /* Queue list */
+      .queue-list { border: 1px solid #1a1a1a; overflow: hidden; }
+      .queue-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem 1.25rem;
+        border-bottom: 1px solid #1a1a1a;
+        font-size: 0.875rem;
+      }
+      .queue-item:last-child { border-bottom: none; }
+      .queue-item .pos { color: #333; width: 2rem; text-align: right; flex-shrink: 0; font-size: 0.75rem; }
+      .queue-item .name { flex: 1; }
+      .empty { padding: 2rem 1.25rem; color: #333; font-size: 0.85rem; text-align: center; border: 1px solid #1a1a1a; }
+
+      .footer { margin-top: 3rem; font-size: 0.7rem; color: #333; }
+      .footer a { color: #444; text-decoration: underline; text-underline-offset: 3px; }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="inner">
+        <span class="brand"><span class="dim">~/</span>que0p</span>
+        <span class="status" id="nav-status">● connecting...</span>
+      </div>
+    </nav>
+
+    <main>
+      <div class="prompt"><span class="dollar">$</span> que0p --queue <span id="prompt-channel"></span></div>
+
+      <div class="header">
+        <h1 id="channel-title">#</h1>
+        <span class="badge closed" id="queue-badge">closed</span>
+      </div>
+      <div class="meta" id="queue-meta">loading...</div>
+
+      <div class="readyup-banner" id="readyup-banner">
+        <div class="label">⚡ ready-up</div>
+        <div class="user" id="readyup-user"></div>
+        <div class="pending" id="readyup-pending"></div>
+      </div>
+
+      <div id="queue-container">
+        <div class="empty">loading...</div>
+      </div>
+
+      <div class="footer">
+        auto-refreshes every 3s &nbsp;·&nbsp; <a href="/">← back to que0p</a>
+      </div>
+    </main>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const channel = params.get('channel')?.toLowerCase();
+
+      if (!channel) {
+        document.querySelector('main').innerHTML = '<p style="color:#555;padding:4rem 0">No channel specified. Use <code>?channel=username</code></p>';
+      } else {
+        document.getElementById('prompt-channel').textContent = channel;
+        document.getElementById('channel-title').textContent = '#' + channel;
+        document.title = `que0p — #${channel}`;
+
+        async function refresh() {
+          try {
+            const res = await fetch(`/api/queue/${channel}`);
+            if (!res.ok) {
+              document.getElementById('queue-meta').textContent = 'Channel not found or bot not active.';
+              document.getElementById('nav-status').textContent = '● offline';
+              document.getElementById('nav-status').className = 'status';
+              document.getElementById('queue-container').innerHTML = '<div class="empty">—</div>';
+              return;
+            }
+
+            const data = await res.json();
+
+            // Nav status
+            const navStatus = document.getElementById('nav-status');
+            navStatus.textContent = '● live';
+            navStatus.className = 'status live';
+
+            // Badge
+            const badge = document.getElementById('queue-badge');
+            if (data.open) {
+              badge.textContent = data.mode === 'seq' ? 'open · sequential' : 'open · random';
+              badge.className = 'badge open';
+            } else {
+              badge.textContent = 'closed';
+              badge.className = 'badge closed';
+            }
+
+            // Meta
+            document.getElementById('queue-meta').textContent =
+              data.size === 0 ? 'queue is empty' : `${data.size} player${data.size === 1 ? '' : 's'} in queue`;
+
+            // Ready-up banner
+            const banner = document.getElementById('readyup-banner');
+            if (data.readyup.waiting) {
+              banner.className = 'readyup-banner visible';
+              document.getElementById('readyup-user').textContent = '@' + data.readyup.current + ' — waiting for !ready';
+              const pending = data.readyup.pending;
+              document.getElementById('readyup-pending').textContent =
+                pending.length > 0 ? `up next: ${pending.join(', ')}` : '';
+            } else {
+              banner.className = 'readyup-banner';
+            }
+
+            // Queue list
+            const container = document.getElementById('queue-container');
+            if (data.players.length === 0) {
+              container.innerHTML = '<div class="empty">no one in the queue yet</div>';
+            } else {
+              container.innerHTML = '<div class="queue-list">' +
+                data.players.map((name, i) =>
+                  `<div class="queue-item">
+                    <span class="pos">${i + 1}</span>
+                    <span class="name">${escHtml(name)}</span>
+                  </div>`
+                ).join('') +
+              '</div>';
+            }
+          } catch {
+            document.getElementById('nav-status').textContent = '● offline';
+            document.getElementById('nav-status').className = 'status';
+          }
+        }
+
+        function escHtml(s) {
+          return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        }
+
+        refresh();
+        setInterval(refresh, 3000);
+      }
+    </script>
+  </body>
+</html>
