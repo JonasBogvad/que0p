@@ -64,6 +64,7 @@ export function startWebServer(): void {
         current: readyup.getPendingWinner(),
         pending: readyup.getPendingList(),
         lastEvent: readyup.getLastEvent(),
+        drawnBatch: readyup.getDrawnBatch(),
       },
     });
   });

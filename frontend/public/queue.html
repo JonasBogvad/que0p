@@ -176,10 +176,10 @@
               <div class="readyup-user" id="readyup-user"></div>
               <div class="readyup-pending" id="readyup-pending"></div>
             </div>
-            <div id="lobby-container"></div>
             <div id="queue-container"><div class="empty-state">loading...</div></div>
           </div>
           <div>
+            <div id="lobby-container"></div>
             <div class="log-box">
               <div class="log-header">// activity log</div>
               <div class="log-entries" id="log-entries" role="log" aria-live="polite">
@@ -193,6 +193,7 @@
         let prevOpen = null;
         let prevReadyupUser = null;
         let prevLastEventLogin = null;
+        let prevDrawnBatch = [];
         let readyupStartTime = null;
         let countdownInterval = null;
         const logEntries = [];
@@ -272,14 +273,23 @@
             );
             prevPlayers = [...data.players];
 
+            // Drawn batch — log once when a new batch starts
+            const batch = data.readyup.drawnBatch || [];
+            const batchKey = batch.join(',');
+            const prevBatchKey = prevDrawnBatch.join(',');
+            if (batch.length > 0 && batchKey !== prevBatchKey) {
+              addLog('draw', `drew ${batch.length}: ${batch.join(', ')}`);
+            }
+            prevDrawnBatch = batch;
+
             // Ready-up
             const banner = document.getElementById('readyup-banner');
             // Log last readyup event if it changed
             const evt = data.readyup.lastEvent;
             if (evt?.login && evt.login !== prevLastEventLogin) {
-              if (evt.type === 'ready') addLog('ready', `${evt.login} is ready ⚡ — joined lobby`);
+              if (evt.type === 'ready') addLog('ready', `${evt.login} → lobby ⚡`);
               else if (evt.type === 'lost') addLog('lost', `${evt.login} — slot lost ⏰`);
-              else if (evt.type === 'skip') addLog('close', `${evt.login} skipped 💨`);
+              else if (evt.type === 'skip') addLog('close', `${evt.login} 💨 skipped`);
               prevLastEventLogin = evt.login;
             }
 
@@ -290,7 +300,6 @@
               document.getElementById('readyup-pending').textContent =
                 pending.length > 0 ? `up next: ${pending.join(', ')}` : '';
               if (data.readyup.current !== prevReadyupUser) {
-                addLog('draw', `${data.readyup.current} drawn — waiting for !ready`);
                 startCountdown();
               }
               prevReadyupUser = data.readyup.current;

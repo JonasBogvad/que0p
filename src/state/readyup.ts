@@ -16,6 +16,7 @@ export interface ReadyupState {
   getPendingList(): string[];
   isWaitingForReady(): boolean;
   getLastEvent(): { type: 'ready' | 'lost' | 'skip' | null; login: string | null };
+  getDrawnBatch(): string[];
 }
 
 export function createReadyupState(): ReadyupState {
@@ -26,6 +27,7 @@ export function createReadyupState(): ReadyupState {
   let _onReady: ((login: string) => void) | null = null;
   let _say: SayFn | null = null;
   let _lastEvent: { type: 'ready' | 'lost' | 'skip' | null; login: string | null } = { type: null, login: null };
+  let _drawnBatch: string[] = [];
 
   function processNext(): void {
     if (_pendingList.length === 0 || _say === null) {
@@ -51,6 +53,7 @@ export function createReadyupState(): ReadyupState {
     startMultiReadyUp(winners, onSlotLost, onReady, say) {
       state.cancelAll();
       if (winners.length === 0) return;
+      _drawnBatch = [...winners];
       _pendingList = [...winners];
       _onSlotLost = onSlotLost;
       _onReady = onReady;
@@ -94,6 +97,7 @@ export function createReadyupState(): ReadyupState {
     getPendingList() { return [..._pendingList]; },
     isWaitingForReady() { return _currentWinner !== null; },
     getLastEvent() { return _lastEvent; },
+    getDrawnBatch() { return [..._drawnBatch]; },
   };
 
   return state;
