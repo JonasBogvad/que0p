@@ -6,6 +6,7 @@ primary_region = 'ord'
 
 [env]
   NODE_ENV = 'production'
+  APP_URL = 'https://twitch-que.fly.dev'
 
 [[mounts]]
   source = 'bot_data'

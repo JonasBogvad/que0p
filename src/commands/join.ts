@@ -1,11 +1,11 @@
 import { createBotCommand } from '@twurple/easy-bot';
-import * as queue from '../state/queue.js';
-import { checkCooldown } from '../state/cooldown.js';
+import { getChannelState } from '../state/perChannel.js';
 
 const COOLDOWN_MS = 3000;
 
 export const joinCommand = createBotCommand('join', async (_params, ctx) => {
-  if (!checkCooldown(ctx.userName, 'join', COOLDOWN_MS)) return;
+  const { queue, cooldown } = getChannelState(ctx.broadcasterName);
+  if (!cooldown.checkCooldown(ctx.userName, 'join', COOLDOWN_MS)) return;
   if (!queue.isQueueOpen()) {
     await ctx.say(`❌ @${ctx.userName} the queue is currently closed.`);
     return;

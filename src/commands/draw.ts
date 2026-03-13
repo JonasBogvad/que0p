@@ -1,12 +1,9 @@
 import { createBotCommand } from '@twurple/easy-bot';
-import * as queue from '../state/queue.js';
-import * as activity from '../state/activity.js';
-import * as readyup from '../state/readyup.js';
+import { getChannelState } from '../state/perChannel.js';
 
 export const drawCommand = createBotCommand('draw', async (params, ctx) => {
   if (!ctx.msg.userInfo.isMod && !ctx.msg.userInfo.isBroadcaster) return;
 
-  // Parse optional N (1–5, default 1)
   let n = 1;
   if (params.length > 0 && params[0] !== '') {
     const parsed = parseInt(params[0], 10);
@@ -16,6 +13,8 @@ export const drawCommand = createBotCommand('draw', async (params, ctx) => {
     }
     n = parsed;
   }
+
+  const { queue, activity, readyup } = getChannelState(ctx.broadcasterName);
 
   if (readyup.isWaitingForReady()) {
     await ctx.say(`⚔️ Already waiting for @${readyup.getPendingWinner()} to ready up.`);

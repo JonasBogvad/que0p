@@ -1,11 +1,11 @@
 import { createBotCommand } from '@twurple/easy-bot';
-import * as queue from '../state/queue.js';
-import { checkCooldown } from '../state/cooldown.js';
+import { getChannelState } from '../state/perChannel.js';
 
 const COOLDOWN_MS = 3000;
 
 export const positionCommand = createBotCommand('pos', async (_params, ctx) => {
-  if (!checkCooldown(ctx.userName, 'pos', COOLDOWN_MS)) return;
+  const { queue, cooldown } = getChannelState(ctx.broadcasterName);
+  if (!cooldown.checkCooldown(ctx.userName, 'pos', COOLDOWN_MS)) return;
   const list = queue.list();
   const idx = list.indexOf(ctx.userName);
   if (idx === -1) {

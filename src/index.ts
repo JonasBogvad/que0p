@@ -1,12 +1,12 @@
 import 'dotenv/config';
-import { createServer } from 'node:http';
 import { Bot } from '@twurple/easy-bot';
 import { createAuthProvider } from './auth.js';
 import { config } from './config.js';
-import * as activity from './state/activity.js';
-import * as queue from './state/queue.js';
-import { loadPersistedQueue } from './state/queue.js';
+import * as channels from './state/channels.js';
+import { initChannelState, getAllChannelStates } from './state/perChannel.js';
+import { setBotInstance } from './botActions.js';
 import { createRateLimitedSay } from './util/rateLimiter.js';
+import { startWebServer } from './web/server.js';
 import { joinCommand } from './commands/join.js';
 import { leaveCommand } from './commands/leave.js';
 import { positionCommand } from './commands/position.js';
@@ -18,6 +18,8 @@ import { readyCommand } from './commands/ready.js';
 import { skipCommand } from './commands/skip.js';
 import { resetCommand } from './commands/reset.js';
 import { helpCommand } from './commands/help.js';
+import { allowChannelCommand } from './commands/allowchannel.js';
+import { removeChannelCommand } from './commands/removechannel.js';
 
 async function loadAuth() {
   try {
@@ -33,39 +35,21 @@ async function loadAuth() {
   }
 }
 
-function startHealthServer(isConnected: () => boolean): void {
-  const server = createServer((req, res) => {
-    if (req.method === 'GET' && req.url === '/health') {
-      const body = JSON.stringify({
-        status: 'ok',
-        connected: isConnected(),
-        uptime: process.uptime(),
-        queueSize: queue.size(),
-      });
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(body);
-    } else {
-      res.writeHead(404);
-      res.end();
-    }
-  });
-  server.listen(8080, () => {
-    console.log('[health] Server listening on :8080');
-  });
-}
-
 async function main() {
   console.log('Bot starting...');
 
-  await loadPersistedQueue();
-  const authProvider = await loadAuth();
+  // Load persisted channel lists (owner channel always included)
+  await channels.loadChannels();
 
-  let botConnected = false;
+  // Init per-channel state for all active channels (loads persisted queues)
+  const activeChannels = channels.getActive();
+  await Promise.all(activeChannels.map(ch => initChannelState(ch)));
+
+  const authProvider = await loadAuth();
 
   const bot = new Bot({
     authProvider,
-    channel: config.channel,
-    // Emit onMessage even for command messages so activity tracking fires for everyone.
+    channels: activeChannels,
     emitCommandMessageEvents: true,
     commands: [
       joinCommand,
@@ -79,34 +63,38 @@ async function main() {
       skipCommand,
       resetCommand,
       helpCommand,
+      allowChannelCommand,
+      removeChannelCommand,
     ],
   });
 
   // Patch bot.say with a rate limiter (1.1s minimum gap).
-  // ctx.say in every command calls this._bot.say(), so all outgoing messages are covered.
   (bot as unknown as { say: typeof bot.say }).say = createRateLimitedSay(bot.say.bind(bot));
 
+  setBotInstance(bot);
+
   bot.onMessage(event => {
-    activity.recordActivity(event.userName);
+    const state = getAllChannelStates().get(event.broadcasterName);
+    if (state) state.activity.recordActivity(event.userName);
   });
 
   bot.onConnect(() => {
-    botConnected = true;
-    console.log(`[bot] Connected to #${config.channel}`);
+    console.log(`[bot] Connected to ${activeChannels.map(c => '#' + c).join(', ')}`);
   });
 
   bot.onDisconnect((manually, reason) => {
-    botConnected = false;
     if (!manually) {
       console.error('[bot] Disconnected unexpectedly:', reason);
     }
   });
 
-  startHealthServer(() => botConnected);
+  startWebServer();
 
   const shutdown = () => {
     console.log('\n[bot] Shutting down...');
-    bot.leave(config.channel);
+    for (const ch of channels.getActive()) {
+      bot.leave(ch);
+    }
     process.exit(0);
   };
 

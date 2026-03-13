@@ -1,112 +1,117 @@
 import { writeFile, readFile } from 'fs/promises';
-import { QUEUE_FILE } from '../paths.js';
 
-let _queue: string[] = [];
-let _inQueue = new Set<string>();
-let _isOpen = false;
-let _mode: 'seq' | 'ran' | null = null;
-let _announceTimer: ReturnType<typeof setInterval> | null = null;
-
-function persist(): void {
-  writeFile(QUEUE_FILE, JSON.stringify(_queue, null, 2), 'utf-8').catch(err =>
-    console.error('[queue] Failed to persist:', err)
-  );
+export interface QueueState {
+  loadPersisted(): Promise<void>;
+  join(login: string): number | null;
+  leave(login: string): boolean;
+  drawSequential(filterFn?: (login: string) => boolean): string | null;
+  drawRandom(filterFn?: (login: string) => boolean): string | null;
+  list(): string[];
+  size(): number;
+  clear(): void;
+  has(login: string): boolean;
+  open(mode: 'seq' | 'ran'): void;
+  close(): void;
+  isQueueOpen(): boolean;
+  getMode(): 'seq' | 'ran' | null;
+  startAnnounce(callback: () => void): void;
+  stopAnnounce(): void;
 }
 
-export async function loadPersistedQueue(): Promise<void> {
-  try {
-    const data = JSON.parse(await readFile(QUEUE_FILE, 'utf-8')) as unknown;
-    if (Array.isArray(data)) {
-      _queue = data as string[];
-      _inQueue = new Set(_queue);
-      console.log(`[queue] Loaded ${_queue.length} entries from persistence.`);
-    }
-  } catch {
-    // No persisted queue — start fresh
+export function createQueueState(persistFile: string): QueueState {
+  let _queue: string[] = [];
+  let _inQueue = new Set<string>();
+  let _isOpen = false;
+  let _mode: 'seq' | 'ran' | null = null;
+  let _announceTimer: ReturnType<typeof setInterval> | null = null;
+
+  function persist(): void {
+    writeFile(persistFile, JSON.stringify(_queue, null, 2), 'utf-8').catch(err =>
+      console.error('[queue] Failed to persist:', err)
+    );
   }
-}
 
-export function join(login: string): number | null {
-  if (_inQueue.has(login)) return null;
-  _queue.push(login);
-  _inQueue.add(login);
-  persist();
-  return _queue.length;
-}
+  const state: QueueState = {
+    async loadPersisted() {
+      try {
+        const data = JSON.parse(await readFile(persistFile, 'utf-8')) as unknown;
+        if (Array.isArray(data)) {
+          _queue = data as string[];
+          _inQueue = new Set(_queue);
+          console.log(`[queue] Loaded ${_queue.length} entries from ${persistFile}.`);
+        }
+      } catch {
+        // No persisted queue — start fresh
+      }
+    },
 
-export function leave(login: string): boolean {
-  const idx = _queue.indexOf(login);
-  if (idx === -1) return false;
-  _queue.splice(idx, 1);
-  _inQueue.delete(login);
-  persist();
-  return true;
-}
+    join(login) {
+      if (_inQueue.has(login)) return null;
+      _queue.push(login);
+      _inQueue.add(login);
+      persist();
+      return _queue.length;
+    },
 
-// Sequential: pick the first eligible entry (FIFO), remove and return it.
-export function drawSequential(filterFn?: (login: string) => boolean): string | null {
-  const idx = filterFn ? _queue.findIndex(filterFn) : 0;
-  if (idx === -1 || idx >= _queue.length) return null;
-  const winner = _queue[idx];
-  _queue.splice(idx, 1);
-  _inQueue.delete(winner);
-  persist();
-  return winner;
-}
+    leave(login) {
+      const idx = _queue.indexOf(login);
+      if (idx === -1) return false;
+      _queue.splice(idx, 1);
+      _inQueue.delete(login);
+      persist();
+      return true;
+    },
 
-// Random: pick a random eligible entry, remove and return it.
-export function drawRandom(filterFn?: (login: string) => boolean): string | null {
-  const eligible = filterFn ? _queue.filter(filterFn) : [..._queue];
-  if (eligible.length === 0) return null;
-  const winner = eligible[Math.floor(Math.random() * eligible.length)];
-  leave(winner);
-  return winner;
-}
+    drawSequential(filterFn) {
+      const idx = filterFn ? _queue.findIndex(filterFn) : 0;
+      if (idx === -1 || idx >= _queue.length) return null;
+      const winner = _queue[idx];
+      _queue.splice(idx, 1);
+      _inQueue.delete(winner);
+      persist();
+      return winner;
+    },
 
-export function list(): string[] {
-  return [..._queue];
-}
+    drawRandom(filterFn) {
+      const eligible = filterFn ? _queue.filter(filterFn) : [..._queue];
+      if (eligible.length === 0) return null;
+      const winner = eligible[Math.floor(Math.random() * eligible.length)];
+      const idx = _queue.indexOf(winner);
+      if (idx !== -1) {
+        _queue.splice(idx, 1);
+        _inQueue.delete(winner);
+        persist();
+      }
+      return winner;
+    },
 
-export function size(): number {
-  return _queue.length;
-}
+    list() { return [..._queue]; },
+    size() { return _queue.length; },
 
-export function clear(): void {
-  _queue = [];
-  _inQueue = new Set();
-  persist();
-}
+    clear() {
+      _queue = [];
+      _inQueue = new Set();
+      persist();
+    },
 
-export function has(login: string): boolean {
-  return _inQueue.has(login);
-}
+    has(login) { return _inQueue.has(login); },
+    open(mode) { _isOpen = true; _mode = mode; },
+    close() { _isOpen = false; _mode = null; },
+    isQueueOpen() { return _isOpen; },
+    getMode() { return _mode; },
 
-export function open(mode: 'seq' | 'ran'): void {
-  _isOpen = true;
-  _mode = mode;
-}
+    startAnnounce(callback) {
+      state.stopAnnounce();
+      _announceTimer = setInterval(callback, 60_000);
+    },
 
-export function close(): void {
-  _isOpen = false;
-  _mode = null;
-}
+    stopAnnounce() {
+      if (_announceTimer !== null) {
+        clearInterval(_announceTimer);
+        _announceTimer = null;
+      }
+    },
+  };
 
-export function isQueueOpen(): boolean {
-  return _isOpen;
-}
-
-export function getMode(): 'seq' | 'ran' | null {
-  return _mode;
-}
-
-export function startAnnounce(callback: () => void): void {
-  stopAnnounce();
-  _announceTimer = setInterval(callback, 60_000);
-}
-
-export function stopAnnounce(): void {
-  if (_announceTimer !== null) {
-    clearInterval(_announceTimer);
-    _announceTimer = null;
-  }
+  return state;
 }

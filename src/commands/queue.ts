@@ -1,11 +1,12 @@
 import { createBotCommand } from '@twurple/easy-bot';
-import * as queue from '../state/queue.js';
+import { getChannelState } from '../state/perChannel.js';
 
 const MAX_LENGTH = 500;
 
 export const queueCommand = createBotCommand('queue', async (_params, ctx) => {
   if (!ctx.msg.userInfo.isMod && !ctx.msg.userInfo.isBroadcaster) return;
 
+  const { queue } = getChannelState(ctx.broadcasterName);
   const list = queue.list();
   const mode = queue.getMode();
   const statusStr =

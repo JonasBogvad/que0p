@@ -1,9 +1,8 @@
 import { createBotCommand } from '@twurple/easy-bot';
-import * as readyup from '../state/readyup.js';
+import { getChannelState } from '../state/perChannel.js';
 
 export const readyCommand = createBotCommand('ready', async (_params, ctx) => {
-  // Silently ignore if no ready-up is in progress
+  const { readyup } = getChannelState(ctx.broadcasterName);
   if (!readyup.isWaitingForReady()) return;
-  // confirmReady handles the say() itself on success; silently ignore wrong users
   readyup.confirmReady(ctx.userName, ctx.say);
 });
