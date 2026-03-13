@@ -29,17 +29,24 @@ async function getBroadcasterId(channel: string, accessToken: string): Promise<s
   return id;
 }
 
-export function createHelixSay(): (channel: string, message: string) => Promise<void> {
+export function createHelixSay(
+  fallback: (channel: string, message: string) => Promise<void>,
+): (channel: string, message: string) => Promise<void> {
   return async function helixSay(channel: string, message: string): Promise<void> {
     try {
       const accessToken = getAccessToken();
       if (!accessToken) {
-        console.error('[helix] No access token available');
+        console.error('[helix] No access token — falling back to IRC');
+        await fallback(channel, message);
         return;
       }
 
       const broadcasterId = await getBroadcasterId(channel, accessToken);
-      if (!broadcasterId) return;
+      if (!broadcasterId) {
+        console.error(`[helix] No broadcaster ID for ${channel} — falling back to IRC`);
+        await fallback(channel, message);
+        return;
+      }
 
       const res = await fetch('https://api.twitch.tv/helix/chat/messages', {
         method: 'POST',
@@ -57,10 +64,12 @@ export function createHelixSay(): (channel: string, message: string) => Promise<
 
       if (!res.ok) {
         const body = await res.text();
-        console.error(`[helix] Failed to send message to #${channel}: ${res.status} ${body}`);
+        console.error(`[helix] Failed to send message to #${channel}: ${res.status} ${body} — falling back to IRC`);
+        await fallback(channel, message);
       }
     } catch (err) {
       console.error(`[helix] Unexpected error sending to #${channel}:`, err);
+      await fallback(channel, message);
     }
   };
 }
