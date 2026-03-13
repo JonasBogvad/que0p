@@ -12,7 +12,8 @@ async function loadTokenData(): Promise<unknown> {
   } catch {
     // File doesn't exist yet — fall back to the env var (first cold start on Fly)
     if (process.env.TWITCH_BOT_TOKENS) {
-      return JSON.parse(process.env.TWITCH_BOT_TOKENS);
+      const raw = Buffer.from(process.env.TWITCH_BOT_TOKENS, 'base64').toString('utf-8');
+      return JSON.parse(raw);
     }
     throw new Error(`No tokens found. Run \`npm run setup\` to authorize the bot.`);
   }

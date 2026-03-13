@@ -2,5 +2,7 @@ node_modules/
 dist/
 .env
 tokens.json
+tokens.min.json
 queue.json
 *.js.map
+set-fly-secret.ps1
