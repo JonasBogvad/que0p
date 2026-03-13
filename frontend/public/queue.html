@@ -69,7 +69,9 @@
         0%   { background: #0d2b0d; }
         100% { background: transparent; }
       }
-      .queue-pos { color: var(--muted); width: 2rem; text-align: right; flex-shrink: 0; font-size: 0.7rem; }
+      .queue-pos          { color: var(--subtle); width: 2rem; text-align: right; flex-shrink: 0; font-size: 0.7rem; }
+      .queue-pos--seq     { color: var(--green); opacity: 0.6; }
+      .queue-pos--random  { color: var(--subtle); }
 
       /* Activity log */
       .log-box { border: 1px solid var(--border); overflow: hidden; }
@@ -273,7 +275,7 @@
                 data.players.map((name, i) => {
                   const isNew = !existing.has(name) && existing.size > 0;
                   return `<div class="queue-item${isNew ? ' new' : ''}" data-name="${escHtml(name)}">
-                    <span class="queue-pos">${data.mode === 'ran' ? '~' : i + 1}</span>
+                    <span class="queue-pos ${data.mode === 'ran' ? 'queue-pos--random' : 'queue-pos--seq'}">${data.mode === 'ran' ? '~' : i + 1}</span>
                     <span>${escHtml(name)}</span>
                   </div>`;
                 }).join('') +
