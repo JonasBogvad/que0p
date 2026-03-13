@@ -57,6 +57,7 @@ export function startWebServer(): void {
     const error = req.query['error'] as string | undefined;
 
     if (error || !code) {
+      console.log(`[web] /callback denied — error: ${error}`);
       res.redirect('/error.html?reason=Authorization+denied+or+failed.');
       return;
     }
@@ -99,9 +100,12 @@ export function startWebServer(): void {
       const login = userData.data[0]?.login?.toLowerCase();
 
       if (!login) {
+        console.log('[web] /callback — could not resolve login from Twitch');
         res.redirect('/error.html?reason=Could+not+determine+your+Twitch+username.');
         return;
       }
+
+      console.log(`[web] /callback — login: ${login}`);
 
       // Check whitelist (empty whitelist = open to all)
       const isWhitelisted =
@@ -110,12 +114,14 @@ export function startWebServer(): void {
         channels.isApproved(login);
 
       if (!isWhitelisted) {
+        console.log(`[web] /callback — ${login} not whitelisted (approved: ${channels.isApproved(login)}, whitelist: ${config.whitelist})`);
         res.redirect(`/error.html?reason=${encodeURIComponent(`${login} is not on the approved list.`)}`);
         return;
       }
 
       // Already active?
       if (channels.getActive().includes(login)) {
+        console.log(`[web] /callback — ${login} already active`);
         res.redirect(`/success.html?channel=${encodeURIComponent(login)}`);
         return;
       }
@@ -124,6 +130,7 @@ export function startWebServer(): void {
       await initChannelState(login);
       await joinChannel(login);
 
+      console.log(`[web] /callback — bot joined ${login}`);
       res.redirect(`/success.html?channel=${encodeURIComponent(login)}`);
     } catch (err) {
       console.error('[web] /callback error:', err);
