@@ -19,9 +19,9 @@ export const openCommand = createBotCommand('open', async (params, ctx) => {
   queue.open(arg);
   const modeName = arg === 'seq' ? 'sequential' : 'random';
   console.log(`[cmd] ${ctx.userName} opened queue in #${ctx.broadcasterName} (${modeName})`);
-  await ctx.say(`> queue open [${modeName}] — type !join to enter`);
+  await ctx.say(`>_ queue open [${modeName}] — type !join to enter`);
 
   queue.startAnnounce(() => {
-    void ctx.say(`> queue open [${modeName}] — type !join to enter`);
+    void ctx.say(`>_ queue open [${modeName}] — type !join to enter`);
   });
 });
