@@ -3,11 +3,26 @@ import { readFile, writeFile } from 'fs/promises';
 import { config } from './config.js';
 import { TOKENS_PATH } from './paths.js';
 
-// Latest access token — updated on load and on every refresh
+// Latest access token and resolved bot user ID
 let _accessToken: string | null = null;
+let _botUserId: string | null = null;
 
 export function getAccessToken(): string | null {
   return _accessToken;
+}
+
+export function getBotUserId(): string | null {
+  return _botUserId;
+}
+
+async function resolveUserId(accessToken: string): Promise<string> {
+  const res = await fetch('https://id.twitch.tv/oauth2/validate', {
+    headers: { 'Authorization': `OAuth ${accessToken}` },
+  });
+  if (!res.ok) throw new Error(`Token validation failed: ${res.status}`);
+  const data = await res.json() as { user_id: string; login: string };
+  console.log(`[auth] Bot user: ${data.login} (${data.user_id})`);
+  return data.user_id;
 }
 
 async function loadTokenData(): Promise<unknown> {
@@ -40,11 +55,14 @@ export async function createAuthProvider(): Promise<RefreshingAuthProvider> {
   authProvider.onRefresh(async (_userId, newTokenData) => {
     _accessToken = newTokenData.accessToken;
     await writeFile(TOKENS_PATH, JSON.stringify(newTokenData, null, 2), 'utf-8');
+    // Re-resolve user ID on refresh (login doesn't change but keeps _botUserId fresh)
+    _botUserId = await resolveUserId(_accessToken);
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tokenData = await loadTokenData() as any;
   _accessToken = tokenData.accessToken as string;
+  _botUserId = await resolveUserId(_accessToken);
   await authProvider.addUserForToken(tokenData, ['chat']);
 
   return authProvider;

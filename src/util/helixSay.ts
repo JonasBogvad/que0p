@@ -1,4 +1,4 @@
-import { getAccessToken } from '../auth.js';
+import { getAccessToken, getBotUserId } from '../auth.js';
 import { config } from '../config.js';
 
 // Cache channel login → numeric broadcaster ID (never changes)
@@ -50,7 +50,7 @@ export function createHelixSay(): (channel: string, message: string) => Promise<
         },
         body: JSON.stringify({
           broadcaster_id: broadcasterId,
-          sender_id: config.botUserId,
+          sender_id: getBotUserId(),
           message,
         }),
       });
