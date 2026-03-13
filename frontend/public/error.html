@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>que0p — error</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet" />
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        background: #000;
+        color: #fff;
+        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+      }
+      .card {
+        border: 1px solid #222;
+        padding: 3rem;
+        max-width: 540px;
+        width: 100%;
+      }
+      .prompt { color: #555; font-size: 0.8rem; margin-bottom: 2rem; }
+      .prompt span { color: #f87171; }
+      h1 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.75rem; color: #f87171; }
+      p { color: #666; font-size: 0.85rem; line-height: 1.6; margin-bottom: 0.5rem; }
+      .reason { color: #888; font-size: 0.85rem; margin-bottom: 0; }
+      .divider { border: none; border-top: 1px solid #1a1a1a; margin: 2rem 0; }
+      a {
+        color: #fff;
+        font-size: 0.8rem;
+        text-decoration: underline;
+        text-underline-offset: 4px;
+      }
+      a:hover { color: #888; }
+      .twitch-link { color: #9146FF; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="prompt"><span>!</span> que0p --join-channel</div>
+      <h1>✗ access denied</h1>
+      <hr class="divider" />
+      <p class="reason" id="reason"></p>
+      <hr class="divider" />
+      <p>
+        Whitelist only — ask
+        <a href="https://twitch.tv/swisz" target="_blank" rel="noopener noreferrer" class="twitch-link">twitch.tv/swisz</a>
+        to get approved.
+      </p>
+      <hr class="divider" />
+      <a href="/">← back to que0p</a>
+    </div>
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const reason = params.get('reason');
+      const el = document.getElementById('reason');
+      if (reason) el.textContent = reason;
+      else el.style.display = 'none';
+    </script>
+  </body>
+</html>

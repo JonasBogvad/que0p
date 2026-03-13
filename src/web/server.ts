@@ -57,7 +57,7 @@ export function startWebServer(): void {
     const error = req.query['error'] as string | undefined;
 
     if (error || !code) {
-      res.status(400).send('Authorization denied or failed.');
+      res.redirect('/error.html?reason=Authorization+denied+or+failed.');
       return;
     }
 
@@ -76,7 +76,7 @@ export function startWebServer(): void {
       });
 
       if (!tokenRes.ok) {
-        res.status(500).send('Failed to exchange authorization code.');
+        res.redirect('/error.html?reason=Failed+to+exchange+authorization+code.');
         return;
       }
 
@@ -91,7 +91,7 @@ export function startWebServer(): void {
       });
 
       if (!userRes.ok) {
-        res.status(500).send('Failed to fetch user info.');
+        res.redirect('/error.html?reason=Failed+to+fetch+user+info.');
         return;
       }
 
@@ -99,7 +99,7 @@ export function startWebServer(): void {
       const login = userData.data[0]?.login?.toLowerCase();
 
       if (!login) {
-        res.status(500).send('Could not determine your Twitch username.');
+        res.redirect('/error.html?reason=Could+not+determine+your+Twitch+username.');
         return;
       }
 
@@ -110,18 +110,13 @@ export function startWebServer(): void {
         channels.isApproved(login);
 
       if (!isWhitelisted) {
-        res
-          .status(403)
-          .send(
-            `Sorry, <b>${login}</b> is not on the approved list. ` +
-            `Ask the bot owner to run <code>!allowchannel ${login}</code> in their channel.`,
-          );
+        res.redirect(`/error.html?reason=${encodeURIComponent(`${login} is not on the approved list.`)}`);
         return;
       }
 
       // Already active?
       if (channels.getActive().includes(login)) {
-        res.send(`✅ Bot is already in your channel, <b>${login}</b>!`);
+        res.redirect(`/success.html?channel=${encodeURIComponent(login)}`);
         return;
       }
 
@@ -129,13 +124,10 @@ export function startWebServer(): void {
       await initChannelState(login);
       await joinChannel(login);
 
-      res.send(
-        `✅ Bot joined your channel, <b>${login}</b>! ` +
-        `Type <code>!help</code> in chat to see commands.`,
-      );
+      res.redirect(`/success.html?channel=${encodeURIComponent(login)}`);
     } catch (err) {
       console.error('[web] /callback error:', err);
-      res.status(500).send('An unexpected error occurred.');
+      res.redirect('/error.html?reason=An+unexpected+error+occurred.');
     }
   });
 

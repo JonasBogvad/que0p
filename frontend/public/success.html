@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>que0p — joined</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet" />
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        background: #000;
+        color: #fff;
+        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+      }
+      .card {
+        border: 1px solid #222;
+        padding: 3rem;
+        max-width: 540px;
+        width: 100%;
+      }
+      .prompt { color: #555; font-size: 0.8rem; margin-bottom: 2rem; }
+      .prompt span { color: #4ade80; }
+      h1 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.75rem; }
+      .channel { color: #4ade80; }
+      p { color: #666; font-size: 0.85rem; line-height: 1.6; margin-bottom: 0.5rem; }
+      .divider { border: none; border-top: 1px solid #1a1a1a; margin: 2rem 0; }
+      a {
+        color: #fff;
+        font-size: 0.8rem;
+        text-decoration: underline;
+        text-underline-offset: 4px;
+      }
+      a:hover { color: #888; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="prompt"><span>$</span> que0p --join-channel</div>
+      <h1>✓ bot joined <span class="channel" id="channel"></span></h1>
+      <hr class="divider" />
+      <p>Type <strong style="color:#fff">!help</strong> in your chat to see all commands.</p>
+      <p>The bot is live and ready to manage your queue.</p>
+      <hr class="divider" />
+      <a href="/">← back to que0p</a>
+    </div>
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const ch = params.get('channel');
+      document.getElementById('channel').textContent = ch ? '#' + ch : '';
+    </script>
+  </body>
+</html>
