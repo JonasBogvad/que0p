@@ -1,11 +1,19 @@
 import express from 'express';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 import { config } from '../config.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 import * as channels from '../state/channels.js';
 import { joinChannel } from '../botActions.js';
 import { initChannelState } from '../state/perChannel.js';
 
 export function startWebServer(): void {
   const app = express();
+
+  // Serve the React landing page (built frontend)
+  const frontendDist = join(__dirname, '../../frontend/dist');
+  app.use(express.static(frontendDist));
 
   app.get('/health', (_req, res) => {
     res.json({ status: 'ok', uptime: process.uptime() });
