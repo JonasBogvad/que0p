@@ -231,7 +231,7 @@ export default function App() {
               twitch.tv/swisz
             </a>
             <p className="text-xs text-muted-foreground mt-1">
-              developer & CS streamer — come hang out
+              developer — come hang out
             </p>
           </div>
           <div className="text-xs text-muted-foreground text-right">
