@@ -5,12 +5,14 @@ interface Stats {
   queuesStarted: number;
   playersJoined: number;
   channelsAllTime: number;
+  commandsUsed: number;
 }
 
 let _stats: Stats = {
   queuesStarted: 0,
   playersJoined: 0,
   channelsAllTime: 0,
+  commandsUsed: 0,
 };
 
 async function persist(): Promise<void> {
@@ -42,5 +44,10 @@ export async function incrementPlayersJoined(): Promise<void> {
 
 export async function incrementChannelsAllTime(): Promise<void> {
   _stats.channelsAllTime++;
+  await persist();
+}
+
+export async function incrementCommandsUsed(): Promise<void> {
+  _stats.commandsUsed++;
   await persist();
 }

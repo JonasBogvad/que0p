@@ -3,7 +3,7 @@ import { Bot } from '@twurple/easy-bot';
 import { createAuthProvider } from './auth.js';
 import { config } from './config.js';
 import * as channels from './state/channels.js';
-import { loadStats } from './state/stats.js';
+import { loadStats, incrementCommandsUsed } from './state/stats.js';
 import { initChannelState, getAllChannelStates } from './state/perChannel.js';
 import { setBotInstance } from './botActions.js';
 import { createRateLimitedSay } from './util/rateLimiter.js';
@@ -93,6 +93,7 @@ async function main() {
   bot.onMessage(event => {
     const state = getAllChannelStates().get(event.broadcasterName);
     if (state) state.activity.recordActivity(event.userName);
+    if (event.text.startsWith('!q')) void incrementCommandsUsed();
   });
 
   bot.onConnect(() => {
