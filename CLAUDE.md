@@ -266,10 +266,12 @@ The queue page (`queue.html`) polls `/api/queue/:channel` every 3s and diffs sta
 ## Sending messages (helixSay + rate limiter)
 
 Bot messages go through:
-1. `createHelixSay()` — sends via Twitch Helix `POST /helix/chat/messages` (gives bot badge in chat)
+1. `createHelixSay(authProvider)` — sends via Twitch Helix `POST /helix/chat/messages` (gives bot badge in chat)
 2. `createRateLimitedSay()` — queues messages with 1200ms minimum gap
 
 The bot's `.say()` method is patched at startup to use this pipeline.
+
+`helixSay` calls `authProvider.getAccessTokenForUser(botUserId)` on every message — twurple refreshes the token automatically if expired, so stale token 401s are not possible. Do NOT revert to a cached `_accessToken` snapshot — that was the old approach and caused 401s on cold start.
 
 ---
 
