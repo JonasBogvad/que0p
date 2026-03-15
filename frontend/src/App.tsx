@@ -266,12 +266,12 @@ export default function App() {
             to get approved
           </p>
           {stats && (
-            <p className="mt-6 text-xs text-muted-foreground font-mono">
-              <span className="text-foreground">{stats.channelsAllTime}</span> channels &nbsp;·&nbsp;{' '}
-              <span className="text-foreground">{stats.queuesStarted}</span> queues run &nbsp;·&nbsp;{' '}
-              <span className="text-foreground">{stats.playersJoined}</span> players joined &nbsp;·&nbsp;{' '}
-              <span className="text-foreground">{stats.commandsUsed}</span> commands used
-            </p>
+            <div className="mt-6 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground font-mono">
+              <span><span className="text-foreground">{stats.channelsAllTime}</span> channels</span>
+              <span><span className="text-foreground">{stats.queuesStarted}</span> queues run</span>
+              <span><span className="text-foreground">{stats.playersJoined}</span> players joined</span>
+              <span><span className="text-foreground">{stats.commandsUsed}</span> commands used</span>
+            </div>
           )}
         </div>
       </section>
