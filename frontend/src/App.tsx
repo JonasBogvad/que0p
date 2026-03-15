@@ -349,7 +349,15 @@ export default function App() {
               twitch.tv/swisz
             </a>
             <p className="text-xs text-muted-foreground mt-1">
-              developer — come hang out
+              developer —{' '}
+              <a
+                href="https://www.linkedin.com/in/jonasbogvad/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-foreground underline underline-offset-4"
+              >
+                linkedin
+              </a>
             </p>
           </div>
         </div>
