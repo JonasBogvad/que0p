@@ -353,14 +353,8 @@ export default function App() {
             </p>
           </div>
           <div className="text-xs text-muted-foreground text-right">
-            <div>want the bot in your channel?</div>
-            <a
-              href="https://twitch.tv/swisz"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-foreground underline underline-offset-4"
-            >
-              ask swisz on Twitch
+            <a href="/add-channel" className="text-foreground underline underline-offset-4">
+              $ add-channel →
             </a>
           </div>
         </div>
