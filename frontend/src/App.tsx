@@ -254,7 +254,7 @@ export default function App() {
             </Button>
           </a>
           <p className="mt-4 text-xs text-muted-foreground">
-            free &amp; open — authorize and the bot joins instantly
+            free &amp; open — authorize and the bot joins instantly. type <span className="text-foreground">/mod que0p</span> in chat after.
           </p>
           {stats && (
             <div className="mt-6 grid grid-cols-2 sm:flex sm:flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground font-mono">
@@ -330,7 +330,7 @@ export default function App() {
             </Button>
           </a>
           <p className="mt-4 text-xs text-muted-foreground">
-            free &amp; open — authorize and the bot joins instantly
+            free &amp; open — authorize and the bot joins instantly. type <span className="text-foreground">/mod que0p</span> in chat after.
           </p>
         </div>
       </section>
