@@ -266,7 +266,7 @@ export default function App() {
             to get approved
           </p>
           {stats && (
-            <div className="mt-6 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground font-mono">
+            <div className="mt-6 grid grid-cols-2 sm:flex sm:flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground font-mono">
               <span><span className="text-foreground">{stats.channelsAllTime}</span> channels</span>
               <span><span className="text-foreground">{stats.queuesStarted}</span> queues run</span>
               <span><span className="text-foreground">{stats.playersJoined}</span> players joined</span>
