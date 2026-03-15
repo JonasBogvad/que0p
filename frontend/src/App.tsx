@@ -352,11 +352,6 @@ export default function App() {
               developer — come hang out
             </p>
           </div>
-          <div className="text-xs text-muted-foreground text-right">
-            <a href="/add-channel" className="text-foreground underline underline-offset-4">
-              $ add-channel →
-            </a>
-          </div>
         </div>
       </section>
 
