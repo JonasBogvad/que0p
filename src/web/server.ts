@@ -155,17 +155,6 @@ export function startWebServer(): void {
 
       console.log(`[web] /callback — login: ${login}`);
 
-      // Check whitelist (empty whitelist = open to all)
-      const isWhitelisted =
-        config.whitelist.length === 0 ||
-        config.whitelist.includes(login) ||
-        channels.isApproved(login);
-
-      if (!isWhitelisted) {
-        console.log(`[web] /callback — ${login} not whitelisted (approved: ${channels.isApproved(login)}, whitelist: ${config.whitelist})`);
-        res.redirect(`/error.html?reason=${encodeURIComponent(`${login} is not on the approved list.`)}`);
-        return;
-      }
 
       // Already active?
       if (channels.getActive().includes(login)) {

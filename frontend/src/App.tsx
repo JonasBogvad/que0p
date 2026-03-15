@@ -254,16 +254,7 @@ export default function App() {
             </Button>
           </a>
           <p className="mt-4 text-xs text-muted-foreground">
-            whitelist only —{' '}
-            <a
-              href="https://twitch.tv/swisz"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-foreground underline underline-offset-4"
-            >
-              twitch.tv/swisz
-            </a>{' '}
-            to get approved
+            free &amp; open — authorize and the bot joins instantly
           </p>
           {stats && (
             <div className="mt-6 grid grid-cols-2 sm:flex sm:flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground font-mono">
@@ -339,16 +330,7 @@ export default function App() {
             </Button>
           </a>
           <p className="mt-4 text-xs text-muted-foreground">
-            whitelist only —{' '}
-            <a
-              href="https://twitch.tv/swisz"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-foreground underline underline-offset-4"
-            >
-              twitch.tv/swisz
-            </a>{' '}
-            to get approved
+            free &amp; open — authorize and the bot joins instantly
           </p>
         </div>
       </section>
