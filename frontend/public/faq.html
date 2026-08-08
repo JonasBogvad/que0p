@@ -249,6 +249,44 @@
       </div>
     </main>
 
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is que0p and how does the queue flow work?",
+          "acceptedAnswer": { "@type": "Answer", "text": "que0p is a free Twitch queue bot for playing games with viewers. A mod opens the queue with !qopen seq or !qopen ran, viewers join with !qjoin, and !qdraw picks players. Drawn players get 30 seconds to !qready before the slot passes on. Confirmed players appear in the lobby." }
+        },
+        {
+          "@type": "Question",
+          "name": "What happens if a drawn player doesn't respond?",
+          "acceptedAnswer": { "@type": "Answer", "text": "They have 30 seconds to type !qready. If the timer runs out their slot is lost, the next drawn player is prompted, and they are automatically requeued at the end — no need to !qjoin again." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does que0p skip AFK players?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Players who haven't chatted in the last 10 minutes are skipped when drawn. They stay in the queue and become eligible again as soon as they type something in chat." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I show the queue on stream as an OBS overlay?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Add a Browser source in OBS or Streamlabs with the URL https://que0p.stream/overlay.html?channel=yourname at 340×620. The transparent overlay shows the queue, lobby, and live ready-up countdown, and hides itself when there is nothing to show." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does the queue close by itself?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes — the queue auto-closes if the stream has been offline for about 10 minutes or after 2 hours with no queue activity. Players already in the queue are kept, so reopening continues where you left off." }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I add que0p to my Twitch channel?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Go to https://que0p.stream and click add-channel — one click via Twitch login, no downloads or setup. After adding, type /mod que0p in your chat. It's free and open source." }
+        }
+      ]
+    }
+    </script>
     <script>
       document.querySelectorAll('.faq-q').forEach(btn => {
         btn.addEventListener('click', () => {

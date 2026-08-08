@@ -1,0 +1,37 @@
+# que0p — Twitch queue bot
+
+> que0p is a free, open-source queue bot for Twitch streamers who play games with
+> their viewers. Viewers join a queue from chat, the bot draws players fairly, runs
+> automated ready-up timers, skips AFK players, and tracks a confirmed lobby — with
+> a transparent OBS overlay to show it all on stream. Works for any game.
+
+Add it at https://que0p.stream — one click via Twitch login, no downloads, no setup.
+After adding, type `/mod que0p` in your chat.
+
+## How it works
+
+1. A mod opens the queue: `!qopen seq` (first-come first-served) or `!qopen ran` (random draw)
+2. Viewers join from chat with `!qjoin` and check their spot with `!qpos`
+3. `!qdraw [1-5]` draws players; each gets 30 seconds to `!qready` or the slot passes on
+4. Confirmed players appear in the lobby; no-shows and skips are requeued automatically
+5. Players who haven't chatted in 10 minutes are skipped on draw (AFK check)
+6. `!qnext` starts a new round; `!qstop` closes the queue; `!qreset` wipes everything
+
+## Key features
+
+- Fair draws: sequential or random
+- Automated 30-second ready-up timers with auto-requeue of no-shows
+- AFK activity check on draw
+- Persistent confirmed-player lobby across draw rounds
+- Transparent OBS browser-source overlay: https://que0p.stream/overlay.html?channel=CHANNEL (340×620)
+- Live queue web page for viewers: https://que0p.stream/queue.html?channel=CHANNEL
+- Queues auto-close when the stream goes offline or after 2 hours of inactivity
+- Free, open source, game-agnostic
+
+## Links
+
+- Website: https://que0p.stream
+- FAQ: https://que0p.stream/faq.html
+- Active channels: https://que0p.stream/channels.html
+- Source code: https://github.com/JonasBogvad/que0p
+- Made by: https://twitch.tv/swisz

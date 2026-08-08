@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /add-channel
+Disallow: /callback
+
+Sitemap: https://que0p.stream/sitemap.xml

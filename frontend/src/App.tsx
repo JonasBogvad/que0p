@@ -106,18 +106,28 @@ const features = [
   },
   {
     icon: '!!',
-    title: 'Ready-Up System',
-    desc: '30 seconds to !qready or lose your slot. No AFK players holding up the lobby.',
+    title: 'Ready-Up Timers',
+    desc: '30 seconds to !qready or the slot passes on. No-shows are requeued automatically.',
   },
   {
     icon: '?',
-    title: 'Activity Check',
+    title: 'AFK Check',
     desc: 'Only active chatters get drawn. Been quiet for 10 minutes? You get skipped.',
   },
   {
     icon: '[]',
     title: 'Lobby Tracker',
     desc: 'Confirmed players build up a lobby list. Persists until !qreset — always know who\'s in.',
+  },
+  {
+    icon: '⧉',
+    title: 'OBS Overlay',
+    desc: 'Transparent browser source with the queue, lobby, and live ready-up countdown on stream.',
+  },
+  {
+    icon: '</>',
+    title: 'Free & Open Source',
+    desc: 'No downloads, no setup, no paywall. One-click add — and the code is on GitHub.',
   },
 ];
 
@@ -168,10 +178,90 @@ const steps = [
   },
   {
     n: '04',
-    title: 'Watch live',
-    desc: 'Share /queue.html?channel=you so viewers can watch the queue update in real time.',
+    title: 'Show it on stream',
+    desc: 'Add the transparent overlay as an OBS browser source, or share the live queue page with viewers.',
   },
 ];
+
+const demoLines: { who: 'mod' | 'bot' | 'viewer'; name: string; text: string }[] = [
+  { who: 'mod', name: 'streamer', text: '!qopen seq' },
+  { who: 'bot', name: 'que0p', text: '>_ queue open [sequential] — type !qjoin to enter' },
+  { who: 'viewer', name: 'zoe', text: '!qjoin' },
+  { who: 'bot', name: 'que0p', text: '> @zoe joined [#1]' },
+  { who: 'viewer', name: 'kai', text: '!qjoin' },
+  { who: 'bot', name: 'que0p', text: '> @kai joined [#2]' },
+  { who: 'mod', name: 'streamer', text: '!qdraw 2' },
+  { who: 'bot', name: 'que0p', text: '>_ @zoe — type !qready within 30s or !qskip to pass' },
+  { who: 'viewer', name: 'zoe', text: '!qready' },
+  { who: 'bot', name: 'que0p', text: '> @zoe ready — slot confirmed' },
+];
+
+function TerminalDemo() {
+  return (
+    <div className="rounded border border-border overflow-hidden text-sm font-mono">
+      <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-background">
+        <span className="text-xs text-muted-foreground">twitch chat — #yourchannel</span>
+        <span className="text-xs text-muted-foreground">● live</span>
+      </div>
+      <div className="p-4 flex flex-col gap-1.5 bg-background">
+        {demoLines.map((l, i) => (
+          <div key={i} className="leading-relaxed">
+            <span className={l.who === 'bot' ? 'text-[#9146FF] font-bold' : 'text-foreground font-bold'}>
+              {l.name}
+            </span>
+            <span className="text-muted-foreground">: </span>
+            <span className={l.who === 'bot' ? 'text-green-400' : 'text-muted-foreground'}>{l.text}</span>
+          </div>
+        ))}
+        <div className="text-muted-foreground">
+          <span className="cursor-blink">_</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function OverlayPreview() {
+  return (
+    <div
+      className="rounded border border-border p-6 flex justify-center"
+      style={{ background: 'linear-gradient(135deg, #101018 0%, #1a1030 55%, #0d0d12 100%)' }}
+      aria-label="Preview of the stream overlay"
+    >
+      <div className="w-56 flex flex-col gap-2 text-xs font-mono">
+        <div className="flex items-center justify-between rounded border border-border bg-black/80 px-3 py-2">
+          <span className="font-bold"><span className="text-muted-foreground">~/</span>que0p</span>
+          <span className="border border-green-400 text-green-400 px-1.5 py-0.5 text-[0.6rem] font-bold uppercase tracking-wider">open · seq</span>
+        </div>
+        <div className="rounded border border-green-400 bg-black/80 px-3 py-2">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-green-400 text-[0.6rem] font-bold uppercase tracking-wider">⚡ ready-up</span>
+            <span className="text-green-400 font-black text-lg leading-none">17</span>
+          </div>
+          <div className="font-bold text-sm">@zoe</div>
+          <div className="text-muted-foreground text-[0.65rem]">type !qready in chat</div>
+        </div>
+        <div className="rounded border border-border bg-black/80 overflow-hidden">
+          <div className="flex justify-between px-3 py-1.5 border-b border-border text-muted-foreground text-[0.6rem] font-bold uppercase tracking-wider">
+            <span>lobby</span><span>1</span>
+          </div>
+          <div className="px-3 py-1.5 font-bold"><span className="text-green-400 text-[0.55rem]">● </span>kai</div>
+        </div>
+        <div className="rounded border border-border bg-black/80 overflow-hidden">
+          <div className="flex justify-between px-3 py-1.5 border-b border-border text-muted-foreground text-[0.6rem] font-bold uppercase tracking-wider">
+            <span>queue — !qjoin</span><span>3</span>
+          </div>
+          {['mira', 'dex', 'sam'].map((n, i) => (
+            <div key={n} className="px-3 py-1.5 font-bold border-b border-border last:border-b-0">
+              <span className="text-green-400/70 text-[0.6rem] font-normal">{i + 1} </span>{n}
+            </div>
+          ))}
+        </div>
+        <div className="text-right text-muted-foreground text-[0.6rem]">que0p.stream</div>
+      </div>
+    </div>
+  );
+}
 
 function CommandTable({
   commands,
@@ -246,7 +336,8 @@ export default function App() {
             <span className="cursor-blink text-muted-foreground"> _</span>
           </h1>
           <p className="text-muted-foreground mb-10 max-w-xl leading-relaxed">
-            Fair draws, ready-up timers, activity checks. Keep the lobby moving — all from Twitch chat.
+            Play with your viewers without the chaos. Fair draws, automated ready-up timers,
+            AFK checks, and a live overlay for OBS — all from Twitch chat.
           </p>
           <a href="/add-channel">
             <Button size="lg" className="text-sm tracking-wide">
@@ -264,6 +355,9 @@ export default function App() {
               <span><span className="text-foreground">{stats.commandsUsed}</span> commands used</span>
             </div>
           )}
+          <div className="mt-12">
+            <TerminalDemo />
+          </div>
         </div>
       </section>
 
@@ -271,7 +365,7 @@ export default function App() {
       <section className="px-6 py-20 border-t border-border">
         <div className="max-w-5xl mx-auto">
           <TypedPrompt text="que0p --features" />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-border">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-border">
             {features.map((f) => (
               <div key={f.title} className="bg-background p-6">
                 <div className="text-xl font-black mb-4 text-muted-foreground">{f.icon}</div>
@@ -300,6 +394,31 @@ export default function App() {
                 <p className="text-muted-foreground text-sm leading-relaxed">{s.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Overlay */}
+      <section className="px-6 py-20 border-t border-border">
+        <div className="max-w-5xl mx-auto">
+          <TypedPrompt text="que0p --overlay" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+            <div>
+              <h2 className="text-3xl font-black mb-4 tracking-tight">Queue on stream.</h2>
+              <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+                A transparent browser-source overlay for OBS and Streamlabs. Your viewers see the
+                queue, the lobby, and the live 30-second ready-up countdown right over your gameplay.
+              </p>
+              <p className="text-muted-foreground text-sm leading-relaxed mb-6">
+                It hides itself when the queue is closed and empty — add it to your scene once and
+                forget it.
+              </p>
+              <div className="text-xs font-mono text-muted-foreground border border-border rounded px-4 py-3">
+                <span className="text-foreground">browser source</span> — 340×620<br />
+                que0p.stream/overlay.html?channel=<span className="text-foreground">you</span>
+              </div>
+            </div>
+            <OverlayPreview />
           </div>
         </div>
       </section>
@@ -358,6 +477,15 @@ export default function App() {
               >
                 linkedin
               </a>
+              {' '}· open source —{' '}
+              <a
+                href="https://github.com/JonasBogvad/que0p"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-foreground underline underline-offset-4"
+              >
+                github
+              </a>
             </p>
           </div>
         </div>
@@ -367,9 +495,19 @@ export default function App() {
       <footer className="border-t border-border px-6 py-6">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
           <span>que0p v1.0.0 — queue bot for Twitch</span>
-          <a href="/add-channel" className="hover:text-foreground transition-colors">
-            $ add-channel →
-          </a>
+          <div className="flex items-center gap-4">
+            <a
+              href="https://github.com/JonasBogvad/que0p"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-foreground transition-colors"
+            >
+              github
+            </a>
+            <a href="/add-channel" className="hover:text-foreground transition-colors">
+              $ add-channel →
+            </a>
+          </div>
         </div>
       </footer>
     </div>

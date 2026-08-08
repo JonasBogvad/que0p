@@ -1,7 +1,7 @@
 {
-  "name": "twitch-que",
+  "name": "que0p",
   "version": "1.0.0",
-  "description": "Twitch CS queue/lottery bot",
+  "description": "Twitch queue bot with automated ready-up, AFK checks and OBS overlay",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
