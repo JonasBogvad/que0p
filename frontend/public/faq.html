@@ -233,11 +233,12 @@
 
         <div class="faq-item">
           <button class="faq-q" aria-expanded="false">
-            <span><span class="faq-q-prefix">Q.</span> Can I use the queue page as a stream overlay?</span>
+            <span><span class="faq-q-prefix">Q.</span> Can I show the queue on stream (OBS overlay)?</span>
             <span class="faq-chevron">▶</span>
           </button>
           <div class="faq-a">
-            <p>Yes — add it as a browser source in OBS or Streamlabs. It's designed to be readable at a glance with the two-column layout and live countdown.</p>
+            <p>Yes — there's a dedicated transparent overlay. In OBS or Streamlabs, add a <strong>Browser</strong> source with URL <code>https://que0p.stream/overlay.html?channel=yourname</code>, width <code>340</code>, height <code>620</code>.</p>
+            <p>It shows the queue, lobby, and live ready-up countdown over your gameplay — and hides itself completely when the queue is closed and empty, so you can leave the source in your scene permanently. Add <code>&amp;max=12</code> to the URL to change how many queue rows are shown (default 8).</p>
           </div>
         </div>
 

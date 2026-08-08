@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>que0p — overlay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/shared.css" />
+    <style>
+      /* OBS browser source: transparent page, panels carry their own background */
+      html, body { background: transparent; }
+      body { overflow: hidden; min-height: 0; }
+
+      .overlay {
+        width: 320px;
+        display: none;
+        flex-direction: column;
+        gap: 8px;
+        padding: 8px;
+      }
+      .overlay.visible { display: flex; }
+
+      .panel {
+        background: rgba(0, 0, 0, 0.82);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      /* Header */
+      .ov-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.55rem 0.8rem;
+      }
+      .ov-brand {
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        color: var(--fg);
+      }
+      .ov-brand .dim { color: var(--muted); }
+
+      /* Ready-up */
+      .ov-readyup {
+        border-color: var(--green);
+        padding: 0.7rem 0.8rem;
+        display: none;
+        animation: ov-pulse 1.5s ease-in-out infinite;
+      }
+      .ov-readyup.visible { display: block; }
+      @keyframes ov-pulse {
+        0%, 100% { border-color: var(--green); }
+        50%       { border-color: #166534; }
+      }
+      .ov-readyup-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.25rem;
+      }
+      .ov-readyup-label {
+        font-size: 0.6rem;
+        color: var(--green);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-weight: 700;
+      }
+      .ov-readyup-timer {
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: var(--green);
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+      }
+      .ov-readyup-timer.urgent { color: var(--red); }
+      .ov-readyup-user { font-size: 0.95rem; font-weight: 800; }
+      .ov-readyup-hint { font-size: 0.65rem; color: var(--muted); margin-top: 0.15rem; }
+
+      /* Section header inside panels */
+      .ov-section-header {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.45rem 0.8rem;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.6rem;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+
+      /* Rows */
+      .ov-row {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.4rem 0.8rem;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.85rem;
+        font-weight: 700;
+      }
+      .ov-row:last-child { border-bottom: none; }
+      .ov-pos {
+        color: var(--green);
+        opacity: 0.7;
+        width: 1.3rem;
+        flex-shrink: 0;
+        text-align: right;
+        font-size: 0.65rem;
+        font-weight: 400;
+      }
+      .ov-pos--random { color: var(--subtle); }
+      .ov-dot { color: var(--green); font-size: 0.55rem; flex-shrink: 0; }
+      .ov-more {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.65rem;
+        color: var(--muted);
+      }
+      .ov-empty {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.75rem;
+        color: var(--muted);
+      }
+
+      /* Watermark */
+      .ov-footer {
+        text-align: right;
+        font-size: 0.6rem;
+        color: var(--muted);
+        padding: 0 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="overlay" id="overlay">
+      <div class="panel ov-header">
+        <span class="ov-brand"><span class="dim">~/</span>que0p <span class="dim" id="ov-channel"></span></span>
+        <span class="badge badge--closed" id="ov-badge">closed</span>
+      </div>
+
+      <div class="panel ov-readyup" id="ov-readyup">
+        <div class="ov-readyup-top">
+          <span class="ov-readyup-label">⚡ ready-up</span>
+          <span class="ov-readyup-timer" id="ov-timer">30</span>
+        </div>
+        <div class="ov-readyup-user" id="ov-readyup-user"></div>
+        <div class="ov-readyup-hint">type !qready in chat</div>
+      </div>
+
+      <div class="panel" id="ov-lobby" hidden>
+        <div class="ov-section-header">
+          <span>lobby</span>
+          <span id="ov-lobby-count"></span>
+        </div>
+        <div id="ov-lobby-rows"></div>
+      </div>
+
+      <div class="panel" id="ov-queue" hidden>
+        <div class="ov-section-header">
+          <span>queue — !qjoin</span>
+          <span id="ov-queue-count"></span>
+        </div>
+        <div id="ov-queue-rows"></div>
+      </div>
+
+      <div class="ov-footer">que0p.stream</div>
+    </div>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const channel = params.get('channel')?.toLowerCase();
+      const maxParam = parseInt(params.get('max') ?? '', 10);
+      const MAX_ROWS = Number.isInteger(maxParam) && maxParam >= 1 && maxParam <= 25 ? maxParam : 8;
+
+      const overlay = document.getElementById('overlay');
+
+      function escHtml(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+
+      let countdownInterval = null;
+      let readyupStartTime = null;
+      let prevReadyupUser = null;
+
+      function startCountdown() {
+        if (countdownInterval) clearInterval(countdownInterval);
+        readyupStartTime = Date.now();
+        countdownInterval = setInterval(() => {
+          const remaining = Math.max(0, 30 - Math.floor((Date.now() - readyupStartTime) / 1000));
+          const el = document.getElementById('ov-timer');
+          el.textContent = remaining;
+          el.className = 'ov-readyup-timer' + (remaining <= 10 ? ' urgent' : '');
+        }, 250);
+      }
+
+      function stopCountdown() {
+        if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+        readyupStartTime = null;
+      }
+
+      async function refresh() {
+        try {
+          const res = await fetch(`/api/queue/${channel}`);
+          if (!res.ok) { overlay.className = 'overlay'; return; }
+          const data = await res.json();
+
+          const hasContent = data.open || data.size > 0 || (data.lobby && data.lobby.length > 0);
+          if (!hasContent) {
+            overlay.className = 'overlay';
+            stopCountdown();
+            prevReadyupUser = null;
+            return;
+          }
+          overlay.className = 'overlay visible';
+
+          const badge = document.getElementById('ov-badge');
+          badge.textContent = data.open ? (data.mode === 'seq' ? 'open · seq' : 'open · ran') : 'closed';
+          badge.className = 'badge ' + (data.open ? 'badge--open' : 'badge--closed');
+
+          // Ready-up
+          const banner = document.getElementById('ov-readyup');
+          if (data.readyup.waiting) {
+            banner.className = 'panel ov-readyup visible';
+            document.getElementById('ov-readyup-user').textContent = '@' + data.readyup.current;
+            if (data.readyup.current !== prevReadyupUser) startCountdown();
+            prevReadyupUser = data.readyup.current;
+          } else {
+            banner.className = 'panel ov-readyup';
+            if (prevReadyupUser !== null) { stopCountdown(); prevReadyupUser = null; }
+          }
+
+          // Lobby
+          const lobbyPanel = document.getElementById('ov-lobby');
+          if (data.lobby && data.lobby.length > 0) {
+            lobbyPanel.hidden = false;
+            document.getElementById('ov-lobby-count').textContent = data.lobby.length;
+            document.getElementById('ov-lobby-rows').innerHTML = data.lobby.map(name =>
+              `<div class="ov-row"><span class="ov-dot">●</span><span>${escHtml(name)}</span></div>`
+            ).join('');
+          } else {
+            lobbyPanel.hidden = true;
+          }
+
+          // Queue
+          const queuePanel = document.getElementById('ov-queue');
+          if (data.open || data.size > 0) {
+            queuePanel.hidden = false;
+            document.getElementById('ov-queue-count').textContent = data.size;
+            const shown = data.players.slice(0, MAX_ROWS);
+            const extra = data.size - shown.length;
+            document.getElementById('ov-queue-rows').innerHTML = (
+              shown.length === 0
+                ? '<div class="ov-empty">no one yet — !qjoin</div>'
+                : shown.map((name, i) =>
+                    `<div class="ov-row">
+                      <span class="ov-pos${data.mode === 'ran' ? ' ov-pos--random' : ''}">${data.mode === 'ran' ? '~' : i + 1}</span>
+                      <span>${escHtml(name)}</span>
+                    </div>`
+                  ).join('')
+            ) + (extra > 0 ? `<div class="ov-more">+${extra} more</div>` : '');
+          } else {
+            queuePanel.hidden = true;
+          }
+        } catch {
+          overlay.className = 'overlay';
+        }
+      }
+
+      if (channel) {
+        document.getElementById('ov-channel').textContent = '#' + channel;
+        refresh();
+        setInterval(refresh, 3000);
+      } else {
+        overlay.className = 'overlay visible';
+        overlay.innerHTML = '<div class="panel ov-empty">missing ?channel=yourname in the URL</div>';
+      }
+    </script>
+  </body>
+</html>

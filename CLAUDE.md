@@ -121,6 +121,7 @@ frontend/
   public/
     shared.css          — shared CSS for all static HTML pages
     queue.html          — live queue viewer (polling every 3s)
+    overlay.html        — transparent OBS browser-source overlay
     channels.html       — lists all active channels
     faq.html            — FAQ accordion page
     success.html        — OAuth success page
@@ -257,9 +258,11 @@ All use `frontend/public/shared.css` — no inline styles allowed. CSS custom pr
 --bg, --fg, --muted, --subtle, --border, --green, --red, --blue, --yellow, --purple, --font
 ```
 
-Pages: `queue.html`, `channels.html`, `faq.html`, `success.html`, `error.html`
+Pages: `queue.html`, `overlay.html`, `channels.html`, `faq.html`, `success.html`, `error.html`
 
 The queue page (`queue.html`) polls `/api/queue/:channel` every 3s and diffs state client-side to drive the activity log. It shows: queue list, lobby, ready-up banner with countdown, activity log.
+
+The overlay (`overlay.html?channel=x`) is a transparent OBS browser-source version of the queue page (recommended source size 340×620). Same 3s polling, no nav/log. Semi-opaque panels over gameplay, que0p.stream watermark, `&max=N` caps visible queue rows (default 8, 1–25). It hides itself entirely when the queue is closed with no players and no lobby, so streamers can leave the source in their scene permanently.
 
 ---
 
