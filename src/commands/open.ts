@@ -1,6 +1,7 @@
 import { createBotCommand } from '@twurple/easy-bot';
 import { getChannelState } from '../state/perChannel.js';
 import { incrementQueuesStarted } from '../state/stats.js';
+import { createAnnounceTick } from '../util/queueWatchdog.js';
 
 export const openCommand = createBotCommand('qopen', async (params, ctx) => {
   if (!ctx.msg.userInfo.isMod && !ctx.msg.userInfo.isBroadcaster) return;
@@ -21,9 +22,12 @@ export const openCommand = createBotCommand('qopen', async (params, ctx) => {
   void incrementQueuesStarted();
   const modeName = arg === 'seq' ? 'sequential' : 'random';
   console.log(`[cmd] ${ctx.userName} opened queue in #${ctx.broadcasterName} (${modeName})`);
-  await ctx.say(`>_ queue open [${modeName}] — type !qjoin to enter`);
+  const announceMsg = `>_ queue open [${modeName}] — type !qjoin to enter`;
+  await ctx.say(announceMsg);
 
-  queue.startAnnounce(() => {
-    void ctx.say(`>_ queue open [${modeName}] — type !qjoin to enter`);
-  });
+  queue.startAnnounce(createAnnounceTick(
+    ctx.broadcasterName,
+    () => { void ctx.say(announceMsg); },
+    msg => { void ctx.say(msg); },
+  ));
 });

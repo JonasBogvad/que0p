@@ -122,6 +122,17 @@
 
         <div class="faq-item">
           <button class="faq-q" aria-expanded="false">
+            <span><span class="faq-q-prefix">Q.</span> Does the queue close by itself?</span>
+            <span class="faq-chevron">▶</span>
+          </button>
+          <div class="faq-a">
+            <p>Yes, in two cases: if the stream has been offline for about 10 minutes, or if there has been no queue activity (joins, leaves, draws) for 2 hours. The bot announces <code>&gt; queue auto-closed</code> with the reason.</p>
+            <p>Players already in the queue are kept — reopening with <code>!qopen</code> continues where you left off. While the stream is offline the bot also stops repeating the queue-open announcement.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">
             <span><span class="faq-q-prefix">Q.</span> What's the difference between <code>seq</code> and <code>ran</code>?</span>
             <span class="faq-chevron">▶</span>
           </button>

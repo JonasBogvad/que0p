@@ -14,8 +14,10 @@ export interface QueueState {
   close(): void;
   isQueueOpen(): boolean;
   getMode(): 'seq' | 'ran' | null;
+  getLastActivityAt(): number;
   startAnnounce(callback: () => void): void;
   stopAnnounce(): void;
+  getAnnounceGen(): number;
 }
 
 export function createQueueState(persistFile: string): QueueState {
@@ -24,6 +26,8 @@ export function createQueueState(persistFile: string): QueueState {
   let _isOpen = false;
   let _mode: 'seq' | 'ran' | null = null;
   let _announceTimer: ReturnType<typeof setInterval> | null = null;
+  let _announceGen = 0;
+  let _lastActivityAt = Date.now();
 
   function persist(): void {
     writeFile(persistFile, JSON.stringify(_queue, null, 2), 'utf-8').catch(err =>
@@ -49,6 +53,7 @@ export function createQueueState(persistFile: string): QueueState {
       if (_inQueue.has(login)) return null;
       _queue.push(login);
       _inQueue.add(login);
+      _lastActivityAt = Date.now();
       persist();
       return _queue.length;
     },
@@ -58,6 +63,7 @@ export function createQueueState(persistFile: string): QueueState {
       if (idx === -1) return false;
       _queue.splice(idx, 1);
       _inQueue.delete(login);
+      _lastActivityAt = Date.now();
       persist();
       return true;
     },
@@ -68,6 +74,7 @@ export function createQueueState(persistFile: string): QueueState {
       const winner = _queue[idx];
       _queue.splice(idx, 1);
       _inQueue.delete(winner);
+      _lastActivityAt = Date.now();
       persist();
       return winner;
     },
@@ -80,6 +87,7 @@ export function createQueueState(persistFile: string): QueueState {
       if (idx !== -1) {
         _queue.splice(idx, 1);
         _inQueue.delete(winner);
+        _lastActivityAt = Date.now();
         persist();
       }
       return winner;
@@ -95,10 +103,11 @@ export function createQueueState(persistFile: string): QueueState {
     },
 
     has(login) { return _inQueue.has(login); },
-    open(mode) { _isOpen = true; _mode = mode; },
+    open(mode) { _isOpen = true; _mode = mode; _lastActivityAt = Date.now(); },
     close() { _isOpen = false; _mode = null; },
     isQueueOpen() { return _isOpen; },
     getMode() { return _mode; },
+    getLastActivityAt() { return _lastActivityAt; },
 
     startAnnounce(callback) {
       state.stopAnnounce();
@@ -106,11 +115,16 @@ export function createQueueState(persistFile: string): QueueState {
     },
 
     stopAnnounce() {
+      // Bumping the generation invalidates any in-flight async announce tick
+      // (startAnnounce also bumps it, via its stopAnnounce call).
+      _announceGen++;
       if (_announceTimer !== null) {
         clearInterval(_announceTimer);
         _announceTimer = null;
       }
     },
+
+    getAnnounceGen() { return _announceGen; },
   };
 
   return state;

@@ -26,3 +26,16 @@ export function sayInChannel(channel: string, text: string): void {
   if (!_bot) return;
   void _bot.say(channel, text);
 }
+
+// Returns null when status can't be determined (bot not ready / API error) —
+// callers must treat null as "unknown", not as offline.
+export async function isChannelLive(channel: string): Promise<boolean | null> {
+  if (!_bot) return null;
+  try {
+    const stream = await _bot.api.streams.getStreamByUserName(channel);
+    return stream !== null;
+  } catch (err) {
+    console.error(`[watchdog] Live check failed for #${channel}:`, err);
+    return null;
+  }
+}

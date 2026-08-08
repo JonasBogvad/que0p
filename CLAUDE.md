@@ -364,3 +364,4 @@ Old domain `twitch-que.fly.dev` 301-redirects to `que0p.stream` via middleware i
 - **Sequential draw removes in order** — first joined = first drawn; random picks uniformly
 - **Rate limit 1200ms** — prevents Twitch rate limit errors during large draw batches
 - **Helix API for messages** — gives the bot its verified badge in chat
+- **Queue auto-close watchdog** (`src/util/queueWatchdog.ts`) — runs on the 60s announce tick; closes the queue (like `!qstop`, players kept) when the stream has been offline ~10 consecutive minutes or there's been no queue activity (open/join/leave/draw) for 2h. Announce is suppressed while the stream is offline. Live status via Helix; API errors are treated as "unknown" (fail open — keeps announcing, offline count preserved)
