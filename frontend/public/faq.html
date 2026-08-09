@@ -218,6 +218,22 @@
 
       </div>
 
+      <div class="section-label">// safety</div>
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">
+            <span><span class="faq-q-prefix">Q.</span> Is que0p safe to add? What permissions does it get?</span>
+            <span class="faq-chevron">▶</span>
+          </button>
+          <div class="faq-a">
+            <p>The Twitch authorization asks for a single permission: <code>channel:bot</code> — it lets que0p join and send messages in your channel. No access to your account, email, follower list, or streaming controls.</p>
+            <p>You can remove the bot at any time by typing <code>!qpart</code> in your chat. The code is fully open source on <a href="https://github.com/JonasBogvad/que0p">GitHub</a> if you want to verify what it does.</p>
+          </div>
+        </div>
+
+      </div>
+
       <div class="section-label">// queue page</div>
       <div class="faq-list">
 
@@ -283,6 +299,11 @@
           "@type": "Question",
           "name": "How do I add que0p to my Twitch channel?",
           "acceptedAnswer": { "@type": "Answer", "text": "Go to https://que0p.stream and click add-channel — one click via Twitch login, no downloads or setup. After adding, type /mod que0p in your chat. It's free and open source." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is que0p safe? What permissions does it get?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The Twitch authorization asks for a single permission: channel:bot — it lets que0p join and send messages in your channel. No access to your account, email, or streaming controls. Remove it anytime by typing !qpart in your chat. The code is open source at https://github.com/JonasBogvad/que0p." }
         }
       ]
     }

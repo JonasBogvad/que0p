@@ -155,11 +155,6 @@ const modCommands = [
   { cmd: '!qpart', desc: 'Remove bot from your channel' },
 ];
 
-const adminCommands = [
-  { cmd: '!qallow <user>', desc: 'Approve a channel' },
-  { cmd: '!qapproved', desc: 'View approved channels' },
-];
-
 const steps = [
   {
     n: '01',
@@ -347,6 +342,8 @@ export default function App() {
             </a>
             <p className="mt-4 text-xs text-muted-foreground">
               free &amp; open — authorize and the bot joins instantly. type <span className="text-foreground">/mod que0p</span> in chat after.
+              <br />
+              asks only for chat-bot permission — no account access. remove anytime with <span className="text-foreground">!qpart</span>.
             </p>
             {stats && (
               <div className="mt-6 grid grid-cols-2 sm:flex sm:flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground font-mono">
@@ -430,7 +427,6 @@ export default function App() {
           <div className="flex flex-col md:flex-row gap-6">
             <CommandTable commands={viewerCommands} label="viewers" />
             <CommandTable commands={modCommands} label="mods" />
-            <CommandTable commands={adminCommands} label="swisz channel only" />
           </div>
         </div>
       </section>
@@ -450,6 +446,8 @@ export default function App() {
           </a>
           <p className="mt-4 text-xs text-muted-foreground">
             free &amp; open — authorize and the bot joins instantly. type <span className="text-foreground">/mod que0p</span> in chat after.
+            <br />
+            asks only for chat-bot permission — no account access. remove anytime with <span className="text-foreground">!qpart</span>.
           </p>
         </div>
       </section>
