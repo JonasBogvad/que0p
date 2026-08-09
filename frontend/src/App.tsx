@@ -325,39 +325,39 @@ export default function App() {
       </nav>
 
       {/* Hero */}
-      <section className="px-6 pt-24 pb-20">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-muted-foreground text-sm mb-4">
-            <span className="text-foreground">$</span> ./que0p --help
-          </div>
-          <h1 className="text-5xl sm:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
-            <TypedTwitch /> queue bot<br />
-            <span className="text-muted-foreground">for any game.</span>
-            <span className="cursor-blink text-muted-foreground"> _</span>
-          </h1>
-          <p className="text-muted-foreground mb-10 max-w-xl leading-relaxed">
-            Play with your viewers without the chaos. Fair draws, automated ready-up timers,
-            AFK checks, and a live overlay for OBS — all from Twitch chat.
-          </p>
-          <a href="/add-channel">
-            <Button size="lg" className="text-sm tracking-wide">
-              $ add-channel
-            </Button>
-          </a>
-          <p className="mt-4 text-xs text-muted-foreground">
-            free &amp; open — authorize and the bot joins instantly. type <span className="text-foreground">/mod que0p</span> in chat after.
-          </p>
-          {stats && (
-            <div className="mt-6 grid grid-cols-2 sm:flex sm:flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground font-mono">
-              <span><span className="text-foreground">{stats.channelsAllTime}</span> channels</span>
-              <span><span className="text-foreground">{stats.queuesStarted}</span> queues run</span>
-              <span><span className="text-foreground">{stats.playersJoined}</span> players joined</span>
-              <span><span className="text-foreground">{stats.commandsUsed}</span> commands used</span>
+      <section className="px-6 pt-20 pb-20">
+        <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <div className="text-muted-foreground text-sm mb-4">
+              <span className="text-foreground">$</span> ./que0p --help
             </div>
-          )}
-          <div className="mt-12">
-            <TerminalDemo />
+            <h1 className="text-4xl sm:text-5xl font-extrabold mb-6 leading-tight tracking-tight">
+              <TypedTwitch /> queue bot<br />
+              <span className="text-muted-foreground">for any game.</span>
+              <span className="cursor-blink text-muted-foreground"> _</span>
+            </h1>
+            <p className="text-muted-foreground mb-8 leading-relaxed">
+              Play with your viewers without the chaos. Fair draws, automated ready-up timers,
+              AFK checks, and a live overlay for OBS — all from Twitch chat.
+            </p>
+            <a href="/add-channel">
+              <Button size="lg" className="text-sm tracking-wide">
+                $ add-channel
+              </Button>
+            </a>
+            <p className="mt-4 text-xs text-muted-foreground">
+              free &amp; open — authorize and the bot joins instantly. type <span className="text-foreground">/mod que0p</span> in chat after.
+            </p>
+            {stats && (
+              <div className="mt-6 grid grid-cols-2 sm:flex sm:flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground font-mono">
+                <span><span className="text-foreground">{stats.channelsAllTime}</span> channels</span>
+                <span><span className="text-foreground">{stats.queuesStarted}</span> queues run</span>
+                <span><span className="text-foreground">{stats.playersJoined}</span> players joined</span>
+                <span><span className="text-foreground">{stats.commandsUsed}</span> commands used</span>
+              </div>
+            )}
           </div>
+          <TerminalDemo />
         </div>
       </section>
 
@@ -468,7 +468,7 @@ export default function App() {
               twitch.tv/swisz
             </a>
             <p className="text-xs text-muted-foreground mt-1">
-              developer —{' '}
+              developed by <span className="text-foreground">Jonas Bøgvad</span> —{' '}
               <a
                 href="https://www.linkedin.com/in/jonasbogvad/"
                 target="_blank"
@@ -477,7 +477,7 @@ export default function App() {
               >
                 linkedin
               </a>
-              {' '}· open source —{' '}
+              {' '}·{' '}
               <a
                 href="https://github.com/JonasBogvad/que0p"
                 target="_blank"

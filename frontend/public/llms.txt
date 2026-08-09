@@ -38,3 +38,4 @@ downloads, no setup. After adding, type `/mod que0p` in your chat.
 
 - [Source code](https://github.com/JonasBogvad/que0p): TypeScript source on GitHub
 - [Made by swisz](https://twitch.tv/swisz): the developer's Twitch channel
+- [Jonas Bøgvad](https://www.linkedin.com/in/jonasbogvad/): the developer (swisz) on LinkedIn
