@@ -1,12 +1,12 @@
-# que0p — Twitch queue bot
+# que0p
 
 > que0p is a free, open-source queue bot for Twitch streamers who play games with
 > their viewers. Viewers join a queue from chat, the bot draws players fairly, runs
-> automated ready-up timers, skips AFK players, and tracks a confirmed lobby — with
-> a transparent OBS overlay to show it all on stream. Works for any game.
+> automated 30-second ready-up timers, skips AFK players, and tracks a confirmed
+> lobby — with a transparent OBS overlay to show it all on stream. Works for any game.
 
-Add it at https://que0p.stream — one click via Twitch login, no downloads, no setup.
-After adding, type `/mod que0p` in your chat.
+Add it at [que0p.stream](https://que0p.stream) — one click via Twitch login, no
+downloads, no setup. After adding, type `/mod que0p` in your chat.
 
 ## How it works
 
@@ -23,15 +23,18 @@ After adding, type `/mod que0p` in your chat.
 - Automated 30-second ready-up timers with auto-requeue of no-shows
 - AFK activity check on draw
 - Persistent confirmed-player lobby across draw rounds
-- Transparent OBS browser-source overlay: https://que0p.stream/overlay.html?channel=CHANNEL (340×620)
-- Live queue web page for viewers: https://que0p.stream/queue.html?channel=CHANNEL
 - Queues auto-close when the stream goes offline or after 2 hours of inactivity
 - Free, open source, game-agnostic
 
+## Pages
+
+- [Website](https://que0p.stream): landing page with features and one-click add
+- [FAQ](https://que0p.stream/faq.html): how the queue flow, ready-up, AFK check, and auto-close work
+- [Active channels](https://que0p.stream/channels.html): channels currently running que0p
+- [Live queue viewer](https://que0p.stream/queue.html?channel=CHANNEL): real-time queue page for viewers
+- [OBS overlay](https://que0p.stream/overlay.html?channel=CHANNEL): transparent browser-source overlay, recommended size 340×620
+
 ## Links
 
-- Website: https://que0p.stream
-- FAQ: https://que0p.stream/faq.html
-- Active channels: https://que0p.stream/channels.html
-- Source code: https://github.com/JonasBogvad/que0p
-- Made by: https://twitch.tv/swisz
+- [Source code](https://github.com/JonasBogvad/que0p): TypeScript source on GitHub
+- [Made by swisz](https://twitch.tv/swisz): the developer's Twitch channel
