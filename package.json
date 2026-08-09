@@ -16,19 +16,19 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "@twurple/api": "^8.0.3",
-    "@twurple/auth": "^8.0.3",
-    "@twurple/easy-bot": "^8.0.3",
-    "dotenv": "^17.3.1",
+    "@twurple/api": "^8.1.4",
+    "@twurple/auth": "^8.1.4",
+    "@twurple/easy-bot": "^8.1.4",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
-    "@types/node": "^25.5.0",
+    "@types/node": "^26.1.2",
     "husky": "^9.1.7",
     "nodemon": "^3.1.14",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "typescript": "^7.0.2"
   }
 }
