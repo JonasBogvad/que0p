@@ -6,8 +6,9 @@ updates:
       interval: weekly
       day: monday
     groups:
-      backend-dependencies:
+      backend-minor-patch:
         patterns: ['*']
+        update-types: [minor, patch]
 
   - package-ecosystem: npm
     directory: /frontend
@@ -15,8 +16,9 @@ updates:
       interval: weekly
       day: monday
     groups:
-      frontend-dependencies:
+      frontend-minor-patch:
         patterns: ['*']
+        update-types: [minor, patch]
 
   - package-ecosystem: docker
     directory: /

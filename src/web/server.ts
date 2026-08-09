@@ -12,10 +12,12 @@ import { getStats, incrementChannelsAllTime } from '../state/stats.js';
 export function startWebServer(): void {
   const app = express();
 
-  // Redirect old domain to new
+  // Redirect old domain to new. Normalize to exactly one leading slash so
+  // the redirect can never leave the que0p.stream origin.
   app.use((req, res, next) => {
     if (req.hostname === 'twitch-que.fly.dev') {
-      res.redirect(301, `https://que0p.stream${req.originalUrl}`);
+      const path = '/' + req.originalUrl.replace(/^\/+/, '');
+      res.redirect(301, `https://que0p.stream${path}`);
       return;
     }
     next();
