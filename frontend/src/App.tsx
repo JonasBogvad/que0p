@@ -208,9 +208,7 @@ function TerminalDemo() {
             <span className={l.who === 'bot' ? 'text-green-400' : 'text-muted-foreground'}>{l.text}</span>
           </div>
         ))}
-        <div className="text-muted-foreground">
-          <span className="cursor-blink">_</span>
-        </div>
+        <div className="text-muted-foreground">_</div>
       </div>
     </div>
   );
@@ -341,10 +339,13 @@ export default function App() {
               </Button>
             </a>
             <p className="mt-4 text-xs text-muted-foreground">
-              free &amp; open — authorize and the bot joins instantly. type <span className="text-foreground">/mod que0p</span> in chat after.
-              <br />
-              asks only for chat-bot permission — no account access. remove anytime with <span className="text-foreground">!qpart</span>.
+              the bot joins instantly — type <span className="text-foreground">/mod que0p</span> in chat after.
             </p>
+            <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+              <span><span className="text-green-400">✓</span> free &amp; open source</span>
+              <span><span className="text-green-400">✓</span> no account access</span>
+              <span><span className="text-green-400">✓</span> remove anytime</span>
+            </div>
             {stats && (
               <div className="mt-6 grid grid-cols-2 sm:flex sm:flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground font-mono">
                 <span><span className="text-foreground">{stats.channelsAllTime}</span> channels</span>
@@ -445,10 +446,13 @@ export default function App() {
             </Button>
           </a>
           <p className="mt-4 text-xs text-muted-foreground">
-            free &amp; open — authorize and the bot joins instantly. type <span className="text-foreground">/mod que0p</span> in chat after.
-            <br />
-            asks only for chat-bot permission — no account access. remove anytime with <span className="text-foreground">!qpart</span>.
+            the bot joins instantly — type <span className="text-foreground">/mod que0p</span> in chat after.
           </p>
+          <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+            <span><span className="text-green-400">✓</span> free &amp; open source</span>
+            <span><span className="text-green-400">✓</span> no account access</span>
+            <span><span className="text-green-400">✓</span> remove anytime</span>
+          </div>
         </div>
       </section>
 
