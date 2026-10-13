@@ -6,12 +6,20 @@ export interface ActivityState {
   getLastActivity(login: string): number | null;
 }
 
-export function createActivityState(): ActivityState {
+/**
+ * Tracks the last chat message per user so draws can skip AFK players.
+ * Users with no record are treated as active until one full window has
+ * passed since boot: after a restart nobody has chatted yet, and a draw in
+ * that first window must not skip the whole queue.
+ */
+export function createActivityState(now: () => number = Date.now): ActivityState {
   const _lastMessage = new Map<string, number>();
+  const _bootedAt = now();
   return {
-    recordActivity(login) { _lastMessage.set(login, Date.now()); },
+    recordActivity(login) { _lastMessage.set(login, now()); },
     isActive(login, windowMs = ACTIVE_WINDOW_MS) {
-      return (Date.now() - (_lastMessage.get(login) ?? 0)) < windowMs;
+      const last = _lastMessage.get(login) ?? _bootedAt;
+      return (now() - last) < windowMs;
     },
     getLastActivity(login) { return _lastMessage.get(login) ?? null; },
   };

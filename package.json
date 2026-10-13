@@ -8,8 +8,9 @@
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts",
     "setup": "tsx src/setup-tokens.ts",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "node -e \"if(process.env.NODE_ENV!=='production')require('child_process').execSync('husky',{stdio:'inherit'})\""
+    "test": "vitest run",
+    "prepare": "node -e \"if(process.env.NODE_ENV!=='production')require('child_process').execSync('husky',{stdio:'inherit'})\"",
+    "test:watch": "vitest"
   },
   "keywords": [],
   "author": "",
@@ -29,6 +30,7 @@
     "nodemon": "^3.1.14",
     "ts-node": "^10.9.2",
     "tsx": "^4.23.13",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.4"
   }
 }

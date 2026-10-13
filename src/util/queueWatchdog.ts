@@ -1,11 +1,23 @@
 import { getChannelState } from '../state/perChannel.js';
 import { isChannelLive } from '../botActions.js';
+import type { QueueMode } from '../state/channelStore.js';
 
 // Announce ticks fire every 60s (see queue.startAnnounce), so ticks ≈ minutes.
 const OFFLINE_TICKS_TO_CLOSE = 10;
 const INACTIVITY_TIMEOUT_MS = 2 * 60 * 60 * 1000;
 
 export type SayFn = (msg: string) => void;
+
+const MODE_NAMES: Record<QueueMode, string> = { seq: 'sequential', ran: 'random' };
+
+export function modeName(mode: QueueMode): string {
+  return MODE_NAMES[mode];
+}
+
+/** The line repeated every announce tick while the queue is open. */
+export function queueOpenMessage(mode: QueueMode): string {
+  return `>_ queue open [${modeName(mode)}] — type !qjoin to enter`;
+}
 
 /**
  * Wraps the queue-open announce loop with auto-close guards:
@@ -33,7 +45,8 @@ export function createAnnounceTick(channel: string, announce: () => void, say: S
       return;
     }
 
-    if (Date.now() - queue.getLastActivityAt() >= INACTIVITY_TIMEOUT_MS) {
+    const lastActivityAt = queue.getLastActivityAt();
+    if (lastActivityAt !== null && Date.now() - lastActivityAt >= INACTIVITY_TIMEOUT_MS) {
       autoClose('inactive 2h');
       return;
     }

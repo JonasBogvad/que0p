@@ -4,7 +4,8 @@ import { createAuthProvider } from './auth.js';
 import { config } from './config.js';
 import * as channels from './state/channels.js';
 import { loadStats, incrementCommandsUsed } from './state/stats.js';
-import { initChannelState, getAllChannelStates } from './state/perChannel.js';
+import { initChannelState, getAllChannelStates, RestoredSession } from './state/perChannel.js';
+import { resumeRestoredSessions } from './util/resumeSessions.js';
 import { setBotInstance } from './botActions.js';
 import { createRateLimitedSay } from './util/rateLimiter.js';
 import { createHelixSay } from './util/helixSay.js';
@@ -48,9 +49,11 @@ async function main() {
   await channels.loadChannels();
   await loadStats();
 
-  // Init per-channel state for all active channels (loads persisted queues)
+  // Init per-channel state for all active channels (loads persisted sessions).
+  // Queues that were open when the process died are resumed once connected.
   const activeChannels = channels.getActive();
-  await Promise.all(activeChannels.map(ch => initChannelState(ch)));
+  const restoredSessions = (await Promise.all(activeChannels.map(ch => initChannelState(ch))))
+    .filter((s): s is RestoredSession => s !== null);
 
   const authProvider = await loadAuth();
 
@@ -98,8 +101,14 @@ async function main() {
     if (event.text.startsWith('!q')) void incrementCommandsUsed();
   });
 
+  let resumed = false;
   bot.onConnect(() => {
     console.log(`[bot] Connected — joining ${channels.getActive().map(c => '#' + c).join(', ')}`);
+    // onConnect also fires on every reconnect; only the first connect resumes sessions.
+    if (!resumed) {
+      resumed = true;
+      void resumeRestoredSessions(restoredSessions);
+    }
   });
 
   bot.onDisconnect((manually, reason) => {
@@ -115,7 +124,10 @@ async function main() {
     for (const ch of channels.getActive()) {
       bot.leave(ch);
     }
-    process.exit(0);
+    // Let in-flight snapshot writes land so the next boot sees the latest state.
+    Promise.all([...getAllChannelStates().values()].map(s => s.flush()))
+      .catch(err => console.error('[bot] Flush on shutdown failed:', err))
+      .finally(() => process.exit(0));
   };
 
   process.on('SIGINT', shutdown);

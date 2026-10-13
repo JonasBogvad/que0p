@@ -2,6 +2,7 @@ import { createBotCommand } from '@twurple/easy-bot';
 import { config } from '../config.js';
 import * as channels from '../state/channels.js';
 import { leaveChannel } from '../botActions.js';
+import { getChannelState } from '../state/perChannel.js';
 
 export const removeChannelCommand = createBotCommand('qpart', async (_params, ctx) => {
   // Cannot remove the owner's channel
@@ -9,6 +10,10 @@ export const removeChannelCommand = createBotCommand('qpart', async (_params, ct
   if (!ctx.msg.userInfo.isMod && !ctx.msg.userInfo.isBroadcaster) return;
 
   const ch = ctx.broadcasterName;
+  const { queue, readyup } = getChannelState(ch);
+  readyup.cancelAll();
+  queue.stopAnnounce();
+  queue.close();
   await channels.removeActive(ch);
   await ctx.say('> bot leaving this channel');
   leaveChannel(ch);

@@ -9,6 +9,10 @@ import { joinChannel } from '../botActions.js';
 import { initChannelState, getChannelState } from '../state/perChannel.js';
 import { getStats, incrementChannelsAllTime } from '../state/stats.js';
 
+function toIso(epochMs: number | null): string | null {
+  return epochMs === null ? null : new Date(epochMs).toISOString();
+}
+
 export function startWebServer(): void {
   const app = express();
 
@@ -52,8 +56,14 @@ export function startWebServer(): void {
   app.get('/api/channels', (_req, res) => {
     const active = channels.getActive();
     const data = active.map((ch) => {
-      const { queue } = getChannelState(ch);
-      return { channel: ch, open: queue.isQueueOpen(), size: queue.size() };
+      const { queue, lobby } = getChannelState(ch);
+      return {
+        channel: ch,
+        open: queue.isQueueOpen(),
+        size: queue.size(),
+        lobby: lobby.list().length,
+        lastActivityAt: toIso(queue.getLastActivityAt()),
+      };
     });
     res.json(data);
   });
@@ -71,6 +81,7 @@ export function startWebServer(): void {
       players: queue.list(),
       size: queue.size(),
       lobby: lobby.list(),
+      lastActivityAt: toIso(queue.getLastActivityAt()),
       readyup: {
         waiting: readyup.isWaitingForReady(),
         current: readyup.getPendingWinner(),

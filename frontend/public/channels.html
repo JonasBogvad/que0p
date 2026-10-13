@@ -82,6 +82,7 @@
                 <span class="channel-name"><span class="hash">#</span>${escHtml(ch.channel)}</span>
                 <span class="channel-right">
                   ${ch.size > 0 ? `<span class="channel-size">${ch.size} in queue</span>` : ''}
+                  ${ch.lastActivityAt ? `<span class="channel-size">used ${timeAgo(ch.lastActivityAt)}</span>` : ''}
                   <span class="badge ${ch.open ? 'badge--open' : 'badge--closed'}">${ch.open ? 'open' : 'closed'}</span>
                   <span class="arrow">→</span>
                 </span>
@@ -91,6 +92,15 @@
         } catch {
           document.getElementById('meta').textContent = 'failed to load';
         }
+      }
+
+      function timeAgo(iso) {
+        const mins = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
+        if (mins < 1) return 'just now';
+        if (mins < 60) return `${mins}m ago`;
+        const hours = Math.floor(mins / 60);
+        if (hours < 48) return `${hours}h ago`;
+        return `${Math.floor(hours / 24)}d ago`;
       }
 
       function escHtml(s) {

@@ -23,7 +23,8 @@ Live at: **https://que0p.stream**
 | Deployment | Fly.io (`twitch-que` app), region `ord` |
 | Persistent data | Fly volume mounted at `/data` |
 | CI/CD | GitHub Actions → `fly deploy` on push to `master` |
-| Pre-commit hook | Husky runs `npm run build` (tsc) before every commit |
+| Tests | Vitest (`npm test`), unit tests live next to modules as `*.test.ts`, excluded from the tsc build |
+| Pre-commit hook | Husky runs `npm run build && npm test` before every commit |
 
 ---
 
@@ -80,10 +81,12 @@ src/
 
   state/
     channels.ts         — active + approved channel lists (persisted)
-    perChannel.ts       — per-channel state factory (queue, readyup, activity, cooldown, lobby)
-    queue.ts            — queue state (join, leave, draw, persist)
-    readyup.ts          — ready-up state machine (draw batch, timer, events)
-    activity.ts         — tracks last chat message time per user (10min window)
+    perChannel.ts       — per-channel state factory (queue, readyup, activity, cooldown, lobby, banlist) + snapshot persistence
+    channelStore.ts     — per-channel snapshot file: read (with legacy upgrade) + coalescing atomic writer
+    queue.ts            — queue state (join, leave, draw, prepend, restore); emits onChange
+    readyup.ts          — ready-up state machine (draw batch, timer, events); emits onChange
+    activity.ts         — tracks last chat message time per user (10min window, grace after boot)
+    *.test.ts           — vitest unit tests next to the module they cover
     cooldown.ts         — per-user per-command cooldown tracker
     stats.ts            — persistent global counters (queuesStarted, playersJoined, channelsAllTime)
 
@@ -109,6 +112,8 @@ src/
   util/
     helixSay.ts         — sends messages via Twitch Helix API (gets bot badge)
     rateLimiter.ts      — queues messages with 1200ms gap to avoid rate limits
+    queueWatchdog.ts    — announce tick with auto-close guards; queueOpenMessage/modeName helpers
+    resumeSessions.ts   — after a restart, re-announces open queues and restarts their announce loops
 
   web/
     server.ts           — Express server, REST API, OAuth callback
@@ -154,7 +159,7 @@ Set on Fly.io with `fly secrets set KEY=value`.
 | `tokens.json` | Bot OAuth tokens (access + refresh), updated on each refresh |
 | `channels.json` | List of active channel logins |
 | `approved.json` | List of approved channel logins (whitelist) |
-| `queue-{channel}.json` | Persisted queue for each channel |
+| `queue-{channel}.json` | Per-channel session snapshot: `players`, `open`, `mode`, `lobby`, `pending` (mid ready-up), `banned`, `lastActivityAt`. Older files are a bare `string[]` of players and are upgraded on read |
 | `stats.json` | Global counters: queuesStarted, playersJoined, channelsAllTime |
 
 In development, data files are written to the project root (`.`).
@@ -165,11 +170,14 @@ In development, data files are written to the project root (`.`).
 
 Every active channel has isolated state created by `getChannelState(channel)`:
 
-- **queue** — ordered list of players; supports sequential and random draw; persisted to disk
+- **queue** — ordered list of players; supports sequential and random draw
 - **readyup** — state machine for the draw/ready-up cycle; tracks current winner, pending list, drawn batch, last event (ready/lost/skip)
-- **activity** — records last chat message time per user; used to filter AFK players on draw (10min window)
-- **cooldown** — prevents users from spamming commands
-- **lobby** — in-memory list of confirmed (readied) players; only cleared on `!qreset` or `!qnext`
+- **activity** — records last chat message time per user; used to filter AFK players on draw (10min window). Users with no record count as active until 10min after boot, so a draw right after a restart doesn't skip everyone
+- **cooldown** — prevents users from spamming commands (in-memory only)
+- **lobby** — list of confirmed (readied) players; only cleared on `!qreset` or `!qnext`
+- **banlist** — users blocked from `!qjoin`
+
+Queue, open flag/mode, lobby, pending ready-ups, bans and last-activity time are written to `queue-{channel}.json` as one snapshot after every change (`perChannel.ts` → `channelStore.ts`; writes coalesce and go via tmp+rename). On boot `initChannelState` restores the snapshot; players who were mid ready-up go to the **front** of the queue. Once the bot connects, `resumeRestoredSessions` restarts the announce loop for every queue that was open and says `> bot restarted — queue restored [...]` in that chat. Shutdown awaits `flush()` on every channel so the last write lands.
 
 ---
 
@@ -218,8 +226,8 @@ Runs on port 8080. Key routes:
 | Route | Description |
 |---|---|
 | `GET /` | Serves React landing page (built frontend) |
-| `GET /api/channels` | Lists active channels with queue size and open status |
-| `GET /api/queue/:channel` | Full queue state: players, lobby, readyup, mode |
+| `GET /api/channels` | Lists active channels with queue size, lobby size, open status, `lastActivityAt` (ISO or null) |
+| `GET /api/queue/:channel` | Full queue state: players, lobby, readyup, mode, `lastActivityAt` |
 | `GET /api/stats` | Global stats: queuesStarted, playersJoined, channelsAllTime |
 | `GET /health` | Health check (`{ status: 'ok', uptime }`) |
 | `GET /add-channel` | Redirects to Twitch OAuth authorization |
@@ -368,5 +376,6 @@ Old domain `twitch-que.fly.dev` 301-redirects to `que0p.stream` via middleware i
 - **Rate limit 1200ms** — prevents Twitch rate limit errors during large draw batches
 - **Helix API for messages** — gives the bot its verified badge in chat
 - **Bot `channels` option is a resolver function** (`() => channels.getActive()`), not a static array — ircv3 re-resolves it on every reconnect, so channels added via `/add-channel` after boot survive a socket drop. Do NOT change it back to a static array: that silently dropped newly added channels until the next deploy (found 2026-10-13)
-- **Deploys restart the bot and wipe in-memory state** (open flag, lobby, ready-up, activity). Pushing to `master` deploys immediately — check `/api/channels` and whether any channel is live before pushing
+- **Restart resilience** — queue, open state, lobby, bans and mid ready-up players survive a restart (see Per-channel state). Only cooldowns, the activity map and the 30s ready-up timers are lost; a restart mid ready-up returns those players to the front of the queue with a chat notice
+- **Deploys still restart the bot** — pushing to `master` deploys immediately. Prefer pushing when no channel is live: the restart takes a few seconds and interrupts any ready-up countdown in progress
 - **Queue auto-close watchdog** (`src/util/queueWatchdog.ts`) — runs on the 60s announce tick; closes the queue (like `!qstop`, players kept) when the stream has been offline ~10 consecutive minutes or there's been no queue activity (open/join/leave/draw) for 2h. Announce is suppressed while the stream is offline. Live status via Helix; API errors are treated as "unknown" (fail open — keeps announcing, offline count preserved)
