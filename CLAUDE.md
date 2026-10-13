@@ -16,7 +16,7 @@ Live at: **https://que0p.stream**
 
 | Layer | Tech |
 |---|---|
-| Bot backend | Node.js 24 (`node:24-alpine`), TypeScript, `@twurple/easy-bot`, `@twurple/auth` |
+| Bot backend | Node.js 24 (`node:24-alpine`), TypeScript 7 (native compiler), `@twurple/easy-bot`, `@twurple/auth` |
 | Web server | Express (port 8080), serves frontend + REST API |
 | Landing page | React 18 + Vite 8 + Tailwind CSS 4 + shadcn/ui (`frontend/`) |
 | Static pages | Plain HTML + `shared.css` (`frontend/public/`) |
