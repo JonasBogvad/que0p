@@ -5,8 +5,9 @@ import { config } from '../config.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 import * as channels from '../state/channels.js';
-import { joinChannel } from '../botActions.js';
-import { initChannelState, getChannelState } from '../state/perChannel.js';
+import { joinChannel, getLiveChannels } from '../botActions.js';
+import { initChannelState, getChannelState, getAllChannelStates } from '../state/perChannel.js';
+import { createDeployStatusProvider } from './deployStatus.js';
 import { getStats, incrementChannelsAllTime } from '../state/stats.js';
 
 function toIso(epochMs: number | null): string | null {
@@ -90,6 +91,25 @@ export function startWebServer(): void {
         drawnBatch: readyup.getDrawnBatch(),
       },
     });
+  });
+
+  const deployStatus = createDeployStatusProvider(
+    () => [...getAllChannelStates().entries()].map(([channel, s]) => ({
+      channel,
+      open: s.queue.isQueueOpen(),
+      waitingForReady: s.readyup.isWaitingForReady(),
+    })),
+    getLiveChannels,
+  );
+
+  // Polled by the deploy workflow so a restart waits for a quiet moment.
+  app.get('/api/deploy-status', async (_req, res) => {
+    try {
+      res.json(await deployStatus());
+    } catch (err) {
+      console.error('[deploy] Status check failed:', err);
+      res.status(500).json({ error: 'status unavailable' });
+    }
   });
 
   app.get('/api/stats', (_req, res) => {

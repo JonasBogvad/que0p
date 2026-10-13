@@ -27,6 +27,22 @@ export function sayInChannel(channel: string, text: string): void {
   void _bot.say(channel, text);
 }
 
+/**
+ * Which of the given logins are live right now, in one Helix call.
+ * Returns null when status can't be determined (bot not ready / API error).
+ */
+export async function getLiveChannels(logins: readonly string[]): Promise<Set<string> | null> {
+  if (logins.length === 0) return new Set();
+  if (!_bot) return null;
+  try {
+    const streams = await _bot.api.streams.getStreamsByUserNames([...logins]);
+    return new Set(streams.map(s => s.userName));
+  } catch (err) {
+    console.error('[deploy] Live check failed:', err);
+    return null;
+  }
+}
+
 // Returns null when status can't be determined (bot not ready / API error) —
 // callers must treat null as "unknown", not as offline.
 export async function isChannelLive(channel: string): Promise<boolean | null> {

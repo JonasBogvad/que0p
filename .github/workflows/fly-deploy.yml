@@ -1,4 +1,10 @@
 # See https://fly.io/docs/app-guides/continuous-deployment-with-github-actions/
+#
+# A deploy restarts the bot. Before deploying, wait for a quiet moment: no live
+# channel with an open queue or a ready-up in progress (polled from the bot's
+# own /api/deploy-status). After an hour we deploy anyway — the bot restores
+# its state on restart, so a busy stream only costs a few seconds and one
+# interrupted ready-up countdown.
 
 name: Fly Deploy
 on:
@@ -6,6 +12,11 @@ on:
     branches:
       - master
   workflow_dispatch:
+    inputs:
+      skip_wait:
+        description: 'Deploy immediately, even if a channel is mid-session'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -16,7 +27,33 @@ jobs:
     runs-on: ubuntu-latest
     concurrency: deploy-group    # ensure only one deploy runs at a time
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+
+      - name: Wait for a quiet moment
+        if: ${{ !inputs.skip_wait }}
+        env:
+          STATUS_URL: https://que0p.stream/api/deploy-status
+          MAX_WAIT_SECONDS: 3600
+          POLL_SECONDS: 60
+        run: |
+          deadline=$(( $(date +%s) + MAX_WAIT_SECONDS ))
+          while :; do
+            if ! body=$(curl -sf --max-time 15 "$STATUS_URL"); then
+              echo "status endpoint unreachable — deploying now"
+              break
+            fi
+            if [ "$(jq -r '.busy' <<<"$body")" != "true" ]; then
+              echo "no live session in progress — deploying"
+              break
+            fi
+            echo "$(date -u +%H:%M:%SZ) busy: $(jq -c '.busyChannels' <<<"$body")"
+            if [ "$(date +%s)" -ge "$deadline" ]; then
+              echo "waited $((MAX_WAIT_SECONDS / 60)) min — deploying anyway"
+              break
+            fi
+            sleep "$POLL_SECONDS"
+          done
+
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: flyctl deploy --remote-only
         env:
