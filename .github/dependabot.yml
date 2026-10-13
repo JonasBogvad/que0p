@@ -9,6 +9,10 @@ updates:
       backend-minor-patch:
         patterns: ['*']
         update-types: [minor, patch]
+    ignore:
+      # Types track the runtime major pinned in the Dockerfile (node:24).
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: npm
     directory: /frontend
@@ -19,6 +23,9 @@ updates:
       frontend-minor-patch:
         patterns: ['*']
         update-types: [minor, patch]
+    ignore:
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: docker
     directory: /

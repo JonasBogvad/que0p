@@ -16,13 +16,13 @@ Live at: **https://que0p.stream**
 
 | Layer | Tech |
 |---|---|
-| Bot backend | Node.js, TypeScript, `@twurple/easy-bot`, `@twurple/auth` |
+| Bot backend | Node.js 24 (`node:24-alpine`), TypeScript, `@twurple/easy-bot`, `@twurple/auth` |
 | Web server | Express (port 8080), serves frontend + REST API |
-| Landing page | React + Vite + Tailwind + shadcn/ui (`frontend/`) |
+| Landing page | React 18 + Vite 8 + Tailwind CSS 4 + shadcn/ui (`frontend/`) |
 | Static pages | Plain HTML + `shared.css` (`frontend/public/`) |
 | Deployment | Fly.io (`twitch-que` app), region `ord` |
 | Persistent data | Fly volume mounted at `/data` |
-| CI/CD | GitHub Actions → `fly deploy` on push to `master` |
+| CI/CD | GitHub Actions → `fly deploy` on push to `master`, after waiting for a quiet moment (see Deployment) |
 | Tests | Vitest (`npm test`), unit tests live next to modules as `*.test.ts`, excluded from the tsc build |
 | Pre-commit hook | Husky runs `npm run build && npm test` before every commit |
 
@@ -117,6 +117,7 @@ src/
 
   web/
     server.ts           — Express server, REST API, OAuth callback
+    deployStatus.ts     — /api/deploy-status: is any live channel mid-session? (cached 30s)
 
 frontend/
   index.html            — landing page shell (OG/SEO tags)
@@ -229,6 +230,7 @@ Runs on port 8080. Key routes:
 | `GET /api/channels` | Lists active channels with queue size, lobby size, open status, `lastActivityAt` (ISO or null) |
 | `GET /api/queue/:channel` | Full queue state: players, lobby, readyup, mode, `lastActivityAt` |
 | `GET /api/stats` | Global stats: queuesStarted, playersJoined, channelsAllTime |
+| `GET /api/deploy-status` | `{ busy, liveStatus, busyChannels, checkedAt }` — busy when a live channel has an open queue or a ready-up in progress. One batched Helix call, cached 30s. Polled by the deploy workflow |
 | `GET /health` | Health check (`{ status: 'ok', uptime }`) |
 | `GET /add-channel` | Redirects to Twitch OAuth authorization |
 | `GET /callback` | OAuth callback: exchanges code, resolves login, joins channel |
@@ -246,7 +248,9 @@ Redirect from `twitch-que.fly.dev` to `que0p.stream` is handled via hostname che
 
 ## Frontend (React landing page)
 
-Built with Vite + Tailwind + shadcn/ui. Output goes to `frontend/dist/`, served as static by Express.
+Built with Vite 8 + Tailwind CSS 4 + shadcn/ui. Output goes to `frontend/dist/`, served as static by Express.
+
+Tailwind v4 is CSS-first: there is no `tailwind.config.ts`. Theme tokens (`--color-*`, `--radius-*`) live in `@theme` in `src/index.css`, and PostCSS uses `@tailwindcss/postcss`. v4 renamed a few utilities (`outline-none` → `outline-hidden`, `shadow` → `shadow-sm`, etc.); run `npx @tailwindcss/upgrade` rather than renaming by hand.
 
 Key components in `App.tsx`:
 - `TypedTwitch` — Twitch logo fades in, then "Twitch" types out character by character
@@ -296,7 +300,7 @@ To set up tokens locally: `npm run setup` (runs `src/setup-tokens.ts`).
 
 ## Deployment
 
-GitHub Actions deploys automatically on every push to `master`. To deploy manually or manage the app:
+GitHub Actions deploys automatically on every push to `master` (and when Dependabot auto-merges a patch/minor update). The deploy workflow first polls `/api/deploy-status` once a minute for up to an hour and only deploys when no live channel has an open queue or a ready-up in progress; if the endpoint is unreachable it deploys immediately. Run the workflow manually with `skip_wait` to bypass the wait. To deploy manually or manage the app:
 
 ```bash
 # Deploy
@@ -377,5 +381,5 @@ Old domain `twitch-que.fly.dev` 301-redirects to `que0p.stream` via middleware i
 - **Helix API for messages** — gives the bot its verified badge in chat
 - **Bot `channels` option is a resolver function** (`() => channels.getActive()`), not a static array — ircv3 re-resolves it on every reconnect, so channels added via `/add-channel` after boot survive a socket drop. Do NOT change it back to a static array: that silently dropped newly added channels until the next deploy (found 2026-10-13)
 - **Restart resilience** — queue, open state, lobby, bans and mid ready-up players survive a restart (see Per-channel state). Only cooldowns, the activity map and the 30s ready-up timers are lost; a restart mid ready-up returns those players to the front of the queue with a chat notice
-- **Deploys still restart the bot** — pushing to `master` deploys immediately. Prefer pushing when no channel is live: the restart takes a few seconds and interrupts any ready-up countdown in progress
+- **Deploys wait for a quiet moment** — the workflow polls `/api/deploy-status` and holds the restart while a live channel is mid-session (up to an hour). Dependabot bumps for `@types/node` majors are ignored so types track the Node major in the Dockerfile
 - **Queue auto-close watchdog** (`src/util/queueWatchdog.ts`) — runs on the 60s announce tick; closes the queue (like `!qstop`, players kept) when the stream has been offline ~10 consecutive minutes or there's been no queue activity (open/join/leave/draw) for 2h. Announce is suppressed while the stream is offline. Live status via Helix; API errors are treated as "unknown" (fail open — keeps announcing, offline count preserved)
