@@ -56,7 +56,9 @@ async function main() {
 
   const bot = new Bot({
     authProvider,
-    channels: activeChannels,
+    // Pass a resolver, not a static array: ircv3 re-resolves it on every (re)connect,
+    // so channels added via /add-channel after boot are rejoined after a socket drop.
+    channels: () => channels.getActive(),
     emitCommandMessageEvents: true,
     commands: [
       joinCommand,
@@ -97,7 +99,7 @@ async function main() {
   });
 
   bot.onConnect(() => {
-    console.log(`[bot] Connected to ${activeChannels.map(c => '#' + c).join(', ')}`);
+    console.log(`[bot] Connected — joining ${channels.getActive().map(c => '#' + c).join(', ')}`);
   });
 
   bot.onDisconnect((manually, reason) => {

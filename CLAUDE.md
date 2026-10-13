@@ -367,4 +367,6 @@ Old domain `twitch-que.fly.dev` 301-redirects to `que0p.stream` via middleware i
 - **Sequential draw removes in order** — first joined = first drawn; random picks uniformly
 - **Rate limit 1200ms** — prevents Twitch rate limit errors during large draw batches
 - **Helix API for messages** — gives the bot its verified badge in chat
+- **Bot `channels` option is a resolver function** (`() => channels.getActive()`), not a static array — ircv3 re-resolves it on every reconnect, so channels added via `/add-channel` after boot survive a socket drop. Do NOT change it back to a static array: that silently dropped newly added channels until the next deploy (found 2026-10-13)
+- **Deploys restart the bot and wipe in-memory state** (open flag, lobby, ready-up, activity). Pushing to `master` deploys immediately — check `/api/channels` and whether any channel is live before pushing
 - **Queue auto-close watchdog** (`src/util/queueWatchdog.ts`) — runs on the 60s announce tick; closes the queue (like `!qstop`, players kept) when the stream has been offline ~10 consecutive minutes or there's been no queue activity (open/join/leave/draw) for 2h. Announce is suppressed while the stream is offline. Live status via Helix; API errors are treated as "unknown" (fail open — keeps announcing, offline count preserved)
